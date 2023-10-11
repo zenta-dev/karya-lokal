@@ -12,40 +12,55 @@ enum UserRole {
   ADMIN
 }
 
-// User Model
-model User {
-  id       String     @id @default(auto()) @map("_id") @db.ObjectId
-  email    String     @unique
-  password String
-  image    String?
-  name     String?
-  role     UserRole   @default(USER)
-  orders   Order[]
-  cart     CartItem[]
+enum OrderStatus {
+  PENDING
+  SHIPPED
+  DELIVERED
+  CANCELED
 }
 
-// Product Category Model
+model User {
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
+  email           String           @unique
+  password        String
+  image           String?
+  name            String?
+  role            UserRole         @default(USER)
+  orders          Order[]
+  cart            CartItem[]
+  reviews         Review[]
+  shippingAddress ShippingAddress?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
 model Category {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
   name     String
   products Product[]
 }
 
-// Product Model
 model Product {
   id          String      @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   description String
   price       Float
   stock       Int
-  imageUrl    String?
   categoryId  String      @db.ObjectId
   category    Category    @relation(fields: [categoryId], references: [id])
   cartItems   CartItem[]
   orderItems  OrderItem[]
+  images      Image[]
+  reviews     Review[]
 }
 
-// Cart Item Model
+model Image {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  url       String
+  productId String  @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id])
+}
+
 model CartItem {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
   quantity  Int
@@ -55,16 +70,15 @@ model CartItem {
   product   Product @relation(fields: [productId], references: [id])
 }
 
-// Order Model
 model Order {
   id     String      @id @default(auto()) @map("_id") @db.ObjectId
   total  Float
+  status OrderStatus @default(PENDING)
   userId String      @db.ObjectId
   user   User        @relation(fields: [userId], references: [id])
   items  OrderItem[]
 }
 
-// Order Item Model
 model OrderItem {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
   quantity  Int
@@ -73,4 +87,26 @@ model OrderItem {
   order     Order   @relation(fields: [orderId], references: [id])
   productId String  @db.ObjectId
   product   Product @relation(fields: [productId], references: [id])
+}
+
+model Review {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  rating    Int
+  comment   String?
+  userId    String  @db.ObjectId
+  user      User    @relation(fields: [userId], references: [id])
+  productId String  @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model ShippingAddress {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  address1 String
+  address2 String?
+  city     String
+  state    String
+  zip      String
+  country  String
+  user     User    @relation(fields: [userId], references: [id])
+  userId   String  @unique @db.ObjectId
 }

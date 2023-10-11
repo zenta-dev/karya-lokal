@@ -1,16 +1,11 @@
-"use client";
-import { Button } from "@/components/ui/button";
+import AddProduct from "@/components/products/AddProduct";
+import ProductList from "@/components/products/ProductList";
 
 const DashboardPage = () => {
-  const addProduct = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("add product");
-  };
   return (
     <div>
-      <Button type="submit" onClick={addProduct}>
-        Add Product
-      </Button>
+      <ProductList />
+      <AddProduct />
     </div>
   );
 };
