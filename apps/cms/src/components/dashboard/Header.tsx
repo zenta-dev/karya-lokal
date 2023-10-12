@@ -1,10 +1,8 @@
 import HeaderLogo from "@/../public/images/logo/karya-lokal.png";
 import Image from "next/image";
 import Link from "next/link";
-import SearchBar from "../SearchBar";
-import LoginPopUp from "../auth/LoginPopUp";
-import { ThemeButton } from "./themes/ThemeButton";
-import RegisterPopUp from "../auth/RegisterPopUp";
+import { ThemeButton } from "../global/themes/ThemeButton";
+import SearchBar from "./SearchBar";
 const Header = () => {
   return (
     <header className="sticky top-0 z-50 py-4 items-center space-x-2 font-medium backdrop-filter backdrop-blur-lg">
@@ -28,8 +26,6 @@ const Header = () => {
         </div>
         <div className="header-items">
           <ThemeButton />
-          <LoginPopUp />
-          <RegisterPopUp />
         </div>
       </div>
     </header>

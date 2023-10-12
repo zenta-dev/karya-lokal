@@ -1,7 +1,7 @@
 import brypt from "bcrypt";
 import { prisma } from "database";
-import { NextResponse } from "next/server";
-export async function POST(req: any) {
+import { NextRequest, NextResponse } from "next/server";
+export async function POST(req: NextRequest) {
   try {
     const { name, email, password } = await req.json();
     const found = await prisma.user.findFirst({

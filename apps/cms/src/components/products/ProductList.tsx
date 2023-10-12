@@ -11,7 +11,7 @@ function ProductList() {
       try {
         const response = await fetch("/api/products");
         const data = await response.json();
-        setProducts(data);
+        setProducts(data.products);
         setLoading(false);
       } catch (error) {
         console.error("There was an error fetching the products", error);
@@ -28,7 +28,7 @@ function ProductList() {
     <div>
       {products.map((product: Product) => (
         <div key={product.id}>
-          {product.name} - ${product.price}
+          {product.name} - {product.price}
         </div>
       ))}
     </div>
