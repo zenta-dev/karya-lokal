@@ -3,7 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Button } from "../ui/button";
+
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -12,16 +13,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const CategorySchema = z.object({
   name: z.string().min(2, {
@@ -29,7 +23,7 @@ const CategorySchema = z.object({
   }),
 });
 
-export default function AddCategory() {
+export default function AddCategory({ onClick }: { onClick: () => void }) {
   const form = useForm<z.infer<typeof CategorySchema>>({
     resolver: zodResolver(CategorySchema),
   });
@@ -46,6 +40,9 @@ export default function AddCategory() {
       });
       const json = await res.json();
       console.log(json);
+      if (json.category) {
+        onClick();
+      }
     } catch (error) {
       console.error("Error creating category:", error);
     }
@@ -54,37 +51,31 @@ export default function AddCategory() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">New Catogries</Button>
+        <Button variant="outline">+ New Category</Button>
       </DialogTrigger>
-
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <DialogContent className=" ">
-            <DialogHeader>
-              <DialogTitle>New Catogries</DialogTitle>
-              <DialogDescription></DialogDescription>
-            </DialogHeader>
-
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>New Category</DialogTitle>
+          <DialogDescription></DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
+            <Input
+              id="name"
+              className="col-span-3"
+              {...form.register("name")}
             />
-
-            <DialogFooter>
-              <Button type="submit">Save changes</Button>
-            </DialogFooter>
-          </DialogContent>{" "}
-        </form>
-      </Form>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="submit" onClick={form.handleSubmit(onSubmit)}>
+            Save
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   );
 }

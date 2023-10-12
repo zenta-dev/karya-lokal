@@ -119,7 +119,7 @@ export default function AddProduct() {
           body: JSON.stringify({
             ...data,
             images: imageUrls,
-            categories,
+            category: value,
           }),
           headers: {
             "Content-Type": "application/json",

@@ -6,7 +6,7 @@ export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const res = useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await fetch("/api/categories");
@@ -23,12 +23,16 @@ export default function CategoriesPage() {
 
     fetchCategories();
   }, []);
-
+  res;
   return (
     <div>
       <div className="flex justify-between items-center">
         <h1>Categories</h1>
-        <AddCategory />
+        <AddCategory
+          onClick={() => {
+            res;
+          }}
+        />
       </div>
       <div>
         {loading ? (
