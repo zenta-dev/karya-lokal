@@ -1,4 +1,5 @@
 "use client";
+import AddCategory from "@/components/categories/AddCategory";
 import { Category } from "database";
 import { useEffect, useState } from "react";
 export default function CategoriesPage() {
@@ -25,7 +26,10 @@ export default function CategoriesPage() {
 
   return (
     <div>
-      <h1>Categories</h1>
+      <div className="flex justify-between items-center">
+        <h1>Categories</h1>
+        <AddCategory />
+      </div>
       <div>
         {loading ? (
           <div>Loading...</div>

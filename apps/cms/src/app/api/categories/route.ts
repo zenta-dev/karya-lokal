@@ -9,3 +9,15 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: "failed", error }, { status: 500 });
   }
 }
+
+export async function POST(req: NextRequest) {
+  try {
+    const { name } = await req.json();
+    const category = await prisma.category.create({
+      data: {
+        name,
+      },
+    });
+    return NextResponse.json({ message: "success", category }, { status: 200 });
+  } catch (error) {}
+}
