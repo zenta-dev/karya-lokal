@@ -1,12 +1,13 @@
 "use client";
-import Header from "@/components/dashboard/Header";
+import { Button } from "@/components/ui/button";
 import type { NextPage } from "next";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 const Dashboard: NextPage = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const pathname = usePathname();
+  const router = useRouter();
   useEffect(() => {
     const fetchArticles = async () => {
       try {
@@ -54,7 +55,17 @@ const Dashboard: NextPage = () => {
   // }
   return (
     <div className="space-y-6">
-
+      <div className="flex justify-between items-center">
+        <h1>Product</h1>
+        <Button
+          variant="outline"
+          onClick={() => {
+            router.push("dashboard/new");
+          }}
+        >
+          + New Product
+        </Button>
+      </div>
     </div>
   );
 };

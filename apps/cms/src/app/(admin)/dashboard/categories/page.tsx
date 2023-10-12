@@ -1,11 +1,12 @@
 "use client";
+import AddCategory from "@/components/categories/AddCategory";
 import { Category } from "database";
 import { useEffect, useState } from "react";
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const res = useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await fetch("/api/categories");
@@ -22,10 +23,17 @@ export default function CategoriesPage() {
 
     fetchCategories();
   }, []);
-
+  res;
   return (
     <div>
-      <h1>Categories</h1>
+      <div className="flex justify-between items-center">
+        <h1>Categories</h1>
+        <AddCategory
+          onClick={() => {
+            res;
+          }}
+        />
+      </div>
       <div>
         {loading ? (
           <div>Loading...</div>
