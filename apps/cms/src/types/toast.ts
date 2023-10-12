@@ -1,13 +1,11 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { useTheme } from "next-themes";
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+const Config = () => {
+  const { theme } = useTheme();
 
-export function toastConfig(theme: string | undefined) {
+  let toastConfig = {};
   if (theme === "dark") {
-    return {
+    toastConfig = {
       style: {
         border: "1px solid #473a35",
         borderRadius: "10px",
@@ -16,7 +14,7 @@ export function toastConfig(theme: string | undefined) {
       },
     };
   } else {
-    return {
+    toastConfig = {
       style: {
         border: "1px solid #333",
         borderRadius: "10px",
@@ -25,4 +23,6 @@ export function toastConfig(theme: string | undefined) {
       },
     };
   }
-}
+};
+
+export default Config;

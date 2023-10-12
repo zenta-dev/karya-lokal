@@ -12,7 +12,7 @@ const handler = NextAuth({
       },
 
       async authorize(credentials, req) {
-        const res = await prisma.user.findUnique({
+        const res = await prisma.user.findFirst({
           where: {
             email: credentials?.email,
           },
@@ -40,22 +40,20 @@ const handler = NextAuth({
   pages: {
     signIn: "/",
   },
-  session: {
-    strategy: "jwt",
-  },
+
   secret: process.env.NEXTAUTH_SECRET,
-  // callbacks: {
-  //   async jwt({ token, user }) {
-  //     if (user) token.role = user.role;
-  //     return { ...token, ...user };
-  //   },
-  //   async session({ session, token }) {
-  //     if (session?.user) {
-  //       session.user = token as any;
-  //     }
-  //     return session;
-  //   },
-  // },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) token.role = user.role;
+      return { ...token, ...user };
+    },
+    async session({ session, token }) {
+      if (session?.user) {
+        session.user = token as any;
+      }
+      return session;
+    },
+  },
 });
 
 export { handler as GET, handler as POST };
