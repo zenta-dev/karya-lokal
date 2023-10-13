@@ -1,6 +1,27 @@
+"use client";
+import { Product, prisma } from "database";
+import { useEffect, useState } from "react";
+
 export interface IHomePageProps {}
+
 const HomePage = ({ ...props }: IHomePageProps): JSX.Element => {
-    return (
+  const [product, setProduct] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        await prisma.$connect();
+        const res = await prisma.product.findMany();
+        console.log(res);
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      }
+    };
+
+    fetchProduct();
+  }, []);
+
+  return (
     <div className="bg-[#eff6ff] border-solid border-[#000000] border w-[1283px] h-[2624px] relative overflow-hidden">
       <div className="bg-[#1e3a8a] w-[1283px] h-[590px] absolute left-0 top-[2034px]">
         <div className="w-[269.69px] h-[204px] absolute left-[102px] top-[332px]">
@@ -405,11 +426,13 @@ const HomePage = ({ ...props }: IHomePageProps): JSX.Element => {
               Gaun Batik Tenun{" "}
             </div>
             <div className="w-[246.12px] h-[223.18px] static">
-              <img alt="" 
+              <img
+                alt=""
                 className="border-solid border-[#000000] border w-[197.14px] h-[223.18px] absolute left-[930.73px] top-[1630.25px]"
                 src="ootd-kondangan-1.png"
               />
-              <img alt=""
+              <img
+                alt=""
                 className="border-solid border-[#000000] border w-[246.12px] h-[223.18px] absolute left-[904.45px] top-[1630.25px]"
                 src="ootd-kondangan-2.png"
               />
@@ -439,15 +462,18 @@ const HomePage = ({ ...props }: IHomePageProps): JSX.Element => {
               Rp. 29.999{" "}
             </div>
             <div className="w-[246.12px] h-[223.18px] static">
-              <img alt=""
+              <img
+                alt=""
                 className="border-solid border-[#000000] border w-[179.22px] h-[223.18px] absolute left-[516.14px] top-[1630.25px]"
                 src="lampu-ukir.png"
               />
-              <img alt="" 
+              <img
+                alt=""
                 className="border-solid border-[#000000] border w-[178.02px] h-[223.18px] absolute left-[584.25px] top-[1630.25px]"
                 src="lampu-ukir2.png"
               />
-              <img alt="" 
+              <img
+                alt=""
                 className="border-solid border-[#000000] border-t border-b w-[179.22px] h-[223.18px] absolute left-[549.6px] top-[1630.25px]"
                 src="lampu-ukir3.png"
               />
@@ -496,7 +522,8 @@ const HomePage = ({ ...props }: IHomePageProps): JSX.Element => {
             >
               Rp. 59.999{" "}
             </div>
-            <img alt=""
+            <img
+              alt=""
               className="border-solid border-[#000000] border w-[246.12px] h-[223.18px] absolute left-[127.84px] top-[1630.26px]"
               src="foto-pot-tanaman-dekoratif.png"
             />
@@ -597,7 +624,8 @@ const HomePage = ({ ...props }: IHomePageProps): JSX.Element => {
               >
                 Desain{" "}
               </div>
-              <img alt=""
+              <img
+                alt=""
                 className="w-[172px] h-[304px] absolute left-[67px] top-[25px]"
                 src="foto-dream-catcher.png"
               />
@@ -616,7 +644,8 @@ const HomePage = ({ ...props }: IHomePageProps): JSX.Element => {
                 tenang dan megah{" "}
               </div>
               <div className="bg-[#ffffff] w-[264px] h-[304px] absolute left-[508.1px] top-40"></div>
-              <img alt=""
+              <img
+                alt=""
                 className="border-solid border-[#000000] border w-[264px] h-[300px] absolute left-[508.1px] top-40"
                 src="foto-vas-bunga.png"
               />
@@ -664,7 +693,8 @@ const HomePage = ({ ...props }: IHomePageProps): JSX.Element => {
               >
                 Telah Kembali!{" "}
               </div>
-              <img alt=""
+              <img
+                alt=""
                 className="border-solid border-[#000000] border w-[266px] h-[304px] absolute left-[18px] top-[25px]"
                 src="foto-kursi.png"
               />
@@ -1095,7 +1125,8 @@ const HomePage = ({ ...props }: IHomePageProps): JSX.Element => {
           >
             Dealone Minibag{" "}
           </div>
-          <img alt=""
+          <img
+            alt=""
             className="w-[447px] h-[290px] absolute left-[645px] top-[258px]"
             src="foto-flawaless-macrame-minibag.png"
           />
@@ -1115,11 +1146,13 @@ const HomePage = ({ ...props }: IHomePageProps): JSX.Element => {
                 Lihat Produk{" "}
               </div>
             </div>
-            <img alt=""
+            <img
+              alt=""
               className="w-[77.82px] h-[79.72px] absolute left-[175px] top-[556.66px]"
               src="hex.png"
             />
-            <img alt=""
+            <img
+              alt=""
               className="w-[120.96px] h-[111.03px] absolute left-[480.06px] top-[458px]"
               src="ring.png"
             />
@@ -1261,7 +1294,8 @@ const HomePage = ({ ...props }: IHomePageProps): JSX.Element => {
             />
           </svg>
         </div>
-        <img alt=""
+        <img
+          alt=""
           className="w-[78px] h-[78px] absolute left-[81px] top-[43px]"
           src="logo-karya-lokal.png"
         />

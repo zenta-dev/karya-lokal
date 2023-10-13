@@ -26,12 +26,28 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
+    // create images from json.images array
+    const images = await Promise.all(
+      json.images.map(async (image: any) => {
+        const img = await prisma.image.create({
+          data: {
+            name: image.name,
+            url: image.url,
+          },
+        });
+        return img;
+      })
+    );
+    // create product
     const product = await prisma.product.create({
       data: {
         name: json.name,
         description: json.description,
         price: json.price,
         stock: json.stock,
+        images: {
+          connect: images.map((image) => ({ id: image.id })),
+        },
         category: {
           connect: {
             id: json.category,

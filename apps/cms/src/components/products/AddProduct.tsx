@@ -77,11 +77,12 @@ export default function AddProduct() {
   async function onSubmit(data: z.infer<typeof ProductSchema>) {
     setProgress(0.1);
 
-    var imageUrls: string[] = [];
+    var imageUrls: { name: string; url: string }[] = [];
     if (images.length > 0) {
       imageUrls = [];
       for (let i = 0; i < images.length; i++) {
         await new Promise((resolve, reject) => {
+          console.log("Name", images[i].name);
           if (images[i].size > 5000000) {
             alert("Image size must be less than 5mb");
             return;
@@ -93,7 +94,6 @@ export default function AddProduct() {
             (snapshot) => {
               const progress =
                 (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              console.log("Upload is " + progress + "% done");
               setProgress(progress);
               if (progress === 100) {
                 setProgress(0);
@@ -106,7 +106,10 @@ export default function AddProduct() {
             () => {
               getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                 console.log("File available at", downloadURL);
-                imageUrls.push(downloadURL);
+                imageUrls.push({
+                  name: "products/" + images[i].name,
+                  url: downloadURL,
+                });
                 resolve(downloadURL);
               });
             }

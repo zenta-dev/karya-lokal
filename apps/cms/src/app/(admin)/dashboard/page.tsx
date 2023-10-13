@@ -1,73 +1,27 @@
-"use client";
+import { getAllProduct } from "@/actions/products";
+import ProductCard from "@/components/products/ProductCard";
 import { Button } from "@/components/ui/button";
-import type { NextPage } from "next";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-const Dashboard: NextPage = () => {
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const pathname = usePathname();
-  const router = useRouter();
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const res = await fetch("http://localhost:3000/article");
-        const data = await res.json();
-        console.log(data);
-        setArticles(data.articles);
-        if (data.articles.length > 0) {
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error("Error fetching articles:", error);
-      }
-    };
+import Link from "next/link";
 
-    fetchArticles();
-  }, []);
-
-  // async function onSubmit(data: ProfileFormValues) {
-  //   const json1 = await parseHtmlToJson(`<div>${value}</div>`);
-  //   console.log(json1);
-  //   const json = JSON.parse(json1);
-  //   const uri = "http://localhost:3000/article/save";
-  //   const dummy = {
-  //     title: "Dummy Title1",
-  //     image: "https://dummyimage.com/600x400/000/fff",
-  //     author: "Dummy Author",
-  //     collaborators: [],
-  //     category: "Dummy Category",
-  //     tags: [],
-  //     published: false,
-  //     content: json,
-  //   };
-  //   const token = session?.user?.token;
-  //   console.log(dummy);
-  //   const res = await fetch(uri, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //     body: JSON.stringify(dummy),
-  //   });
-  //   console.log(res);
-  // }
+export default async function Dashboard() {
+  const products = await getAllProduct();
   return (
-    <div className="space-y-6">
+    <div>
       <div className="flex justify-between items-center">
-        <h1>Product</h1>
-        <Button
-          variant="outline"
-          onClick={() => {
-            router.push("dashboard/new");
-          }}
-        >
-          + New Product
-        </Button>
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <Link href="/dashboard/new">
+          <Button className="bg-blue-500 hover:bg-blue-600">Tambah</Button>
+        </Link>
+      </div>
+      <div className="grid grid-rows-4 gap-4 grid-flow-row">
+        <ul>
+          {products.map((product: any) => (
+            <li key={product.id}>
+              <ProductCard key={product.id} product={product} />
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
-};
-
-export default Dashboard;
+}
