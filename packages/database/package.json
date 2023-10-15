@@ -1,9 +1,10 @@
 {
-  "name": "database",
+  "name": "@karya-lokal/database",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
   "scripts": {
+    "dev": "prisma db push &&prisma generate && ts-node src/index.ts --watch",
     "lint": "eslint \"**/*.ts*\""
   },
   "keywords": [],

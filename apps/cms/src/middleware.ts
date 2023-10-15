@@ -1,17 +1,9 @@
-import { NextRequestWithAuth, withAuth } from "next-auth/middleware";
-import { NextResponse } from "next/server";
+import { authMiddleware } from "@clerk/nextjs";
 
-export default withAuth(
-  function middleware(request: NextRequestWithAuth) {
-    if (request.nextauth.token?.role === "user") {
-      return NextResponse.rewrite(new URL("/denied", request.url));
-    }
-  },
-  {
-    callbacks: {
-      authorized: ({ token }) => !!token,
-    },
-  }
-);
+export default authMiddleware({
+  publicRoutes: ["/api/:path*"],
+});
 
-export const config = { matcher: ["/extra", "/api", "/dashboard"] };
+export const config = {
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+};
