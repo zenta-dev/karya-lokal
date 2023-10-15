@@ -1,26 +1,25 @@
-import { getAllProduct } from "@/actions/products";
 import ProductCard from "@/components/products/ProductCard";
 import { Button } from "@/components/ui/button";
+import { getAllProduct } from "@/lib/products";
 import Link from "next/link";
 
 export default async function Dashboard() {
-  const products = await getAllProduct();
+  const productsData: Promise<Product[]> = getAllProduct();
+  const products = await productsData; 
   return (
     <div>
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <Link href="/dashboard/new">
+      <div className="flex justify-between  ">
+        <h1 className="text-2xl font-bold">Products</h1>
+        <Link href="/dashboard/product/new">
           <Button className="bg-blue-500 hover:bg-blue-600">Tambah</Button>
         </Link>
       </div>
-      <div className="grid grid-rows-4 gap-4 grid-flow-row">
-        <ul>
+      <div className="container mx-auto  ">
+        <div className="grid grid-cols-2 gap-24 p-2 m-2">
           {products.map((product: any) => (
-            <li key={product.id}>
-              <ProductCard key={product.id} product={product} />
-            </li>
+            <ProductCard key={product.id} product={product} />
           ))}
-        </ul>
+        </div>
       </div>
     </div>
   );

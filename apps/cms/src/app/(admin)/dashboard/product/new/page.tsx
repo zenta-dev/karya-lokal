@@ -21,6 +21,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import { getAllCategory } from "@/lib/categories";
 import { storage } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
 import {
@@ -28,18 +30,26 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@radix-ui/react-popover";
-import { Category } from "database";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Progress } from "../ui/progress";
 const ProductSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  description: z.string().min(2, {
-    message: "Description must be at least 2 characters.",
-  }),
+  name: z
+    .string()
+    .min(2, {
+      message: "Name must be at least 2 characters.",
+    })
+    .max(50, {
+      message: "Name must be at most 50 characters.",
+    }),
+  description: z
+    .string()
+    .min(2, {
+      message: "Description must be at least 2 characters.",
+    })
+    .max(500, {
+      message: "Description must be at most 500 characters.",
+    }),
   price: z.coerce.number(),
   stock: z.coerce.number(),
   images: z.any(),
@@ -60,12 +70,10 @@ export default function AddProduct() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch("/api/categories");
-        const data = await res.json();
-        if (data.category) {
-          setCategories(data.category);
-          console.log(data.category);
-        }
+        const promise: Promise<Category[]> = getAllCategory();
+        const data = await promise;
+        setCategories(data);
+        console.log(data);
       } catch (error) {
         console.error("There was an error fetching the categories", error);
       }

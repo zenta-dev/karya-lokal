@@ -1,4 +1,5 @@
-import { Button } from "../ui/button";
+"use client";
+import { Button } from "../../ui/button";
 
 const handleDelete = async (id: string) => {
   console.log(id);

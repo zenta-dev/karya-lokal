@@ -1,8 +1,16 @@
-"use client";
+import { cn } from "@/lib/utils";
 import { Category, Image } from "database";
-import { useState } from "react";
-import { DeleteProduct } from "./DeleteProduct";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import ImageCard from "./ImageCard";
+import { DeleteProduct } from "./buttons/DeleteProduct";
+import { EditProduct } from "./buttons/EditProduct";
 
 export type ProductType = {
   id: string;
@@ -14,21 +22,34 @@ export type ProductType = {
   images: Image[];
   category: Category;
 };
-
 export default function ProductCard({ product }: { product: ProductType }) {
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
-
   return (
-    <div className="p-4 bg-grey shadow-md rounded-md">
-      <ImageCard images={product.images} />
-      <div className="pt-4">
-        <h3 className="text-lg font-medium">{product.name}</h3>
-        <p className="text-xl font-bold mt-2">Rp. {product.price}</p>
-        <p className="  mt-2">Category: {product.category.name}</p>
-        <p className="text-sm text-gray-500 mt-2">{product.description}</p>
-        <p className="text-sm text-gray-500 mt-2">Stock: {product.stock}</p>
-        <DeleteProduct id={product.id} />
-      </div>
-    </div>
+    <Card
+      className={cn(
+        " w-screen max-w-xl flex flex-col p-4 bg-grey shadow-md rounded-md h-full"
+      )}
+    >
+      <CardHeader>
+        <ImageCard images={product.images} />
+      </CardHeader>
+      <CardContent>
+        <CardTitle className={cn("text-xl font-bold mt-4 truncate w-full")}>
+          {product.name}
+        </CardTitle>
+        <CardDescription className={cn("mt-4 truncate")}>
+          {product.description}
+        </CardDescription>
+        <p className={cn("truncate text-xl font-bold mt-2")}>
+          Rp. {product.price}
+        </p>
+        <p className="mt-2 truncate">Category: {product.category.name}</p>
+        <p className="text-sm text-gray-500 mt-2 truncate">
+          Stock: {product.stock}
+        </p>
+      </CardContent>
+      <CardFooter className={cn("mt-auto flex space-x-2")}>
+        <DeleteProduct id={product.id} /> <EditProduct id={product.id} />
+      </CardFooter>
+    </Card>
   );
 }
