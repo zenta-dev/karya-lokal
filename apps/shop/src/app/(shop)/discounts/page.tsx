@@ -1,4 +1,4 @@
-import { Product, prisma } from "@karya-lokal/database";
+import { Product, prisma } from "database";
 
 const ProductPage = async ({ params }: { params: { productId: string } }) => {
   let product: Product[] = [];

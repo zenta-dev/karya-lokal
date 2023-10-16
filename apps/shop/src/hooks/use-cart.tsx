@@ -2,7 +2,7 @@ import { toast } from "react-hot-toast";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-import { Product } from "@karya-lokal/database";
+import { Product } from "database";
 
 interface CartStore {
   items: Product[];

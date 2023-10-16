@@ -1,4 +1,4 @@
-import { prisma } from "@karya-lokal/database";
+import { prisma } from "database";
 export const getTotalRevenue = async (userId: string) => {
   const paidOrders = await prisma.order.findMany({
     where: {

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
 import { stripe } from "@/lib/stripe";
-import { prisma } from "@karya-lokal/database";
+import { prisma } from "database";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",

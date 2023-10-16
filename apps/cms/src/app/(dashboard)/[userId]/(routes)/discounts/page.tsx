@@ -1,4 +1,4 @@
-import { prisma } from "@karya-lokal/database";
+import { prisma } from "database";
 
 import { DiscountsClient } from "./components/client";
 import { DiscountColumn } from "./components/columns";

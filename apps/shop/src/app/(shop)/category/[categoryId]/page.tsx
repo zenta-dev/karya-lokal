@@ -1,9 +1,12 @@
+"use client";
 import Billboard from "@/components/ui/billboard";
 import Container from "@/components/ui/container";
 import NoResults from "@/components/ui/no-results";
 import ProductCard from "@/components/ui/product-card";
 
-import getProducts from "@/lib/get-products";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Product } from "../../../../../types";
 import Filter from "./components/filter";
 import MobileFilters from "./components/mobile-filters";
 
@@ -19,11 +22,20 @@ interface CategoryPageProps {
   };
 }
 
-const CategoryPage: React.FC<CategoryPageProps> = async ({
+const CategoryPage: React.FC<CategoryPageProps> = ({
   params,
   searchParams,
 }) => {
-  const products = await getProducts(searchParams);
+  const [products, setProducts] = useState<Product[]>([]);
+  useEffect(() => {
+    async function getProductsById() {
+      const res = await axios.get<Product[]>(
+        "/api/category/" + params.categoryId + ""
+      );
+      console.log(res.data);
+      setProducts(res.data);
+    }
+  }, [params.categoryId, searchParams]);
   const sizes = [
     {
       id: "a1",

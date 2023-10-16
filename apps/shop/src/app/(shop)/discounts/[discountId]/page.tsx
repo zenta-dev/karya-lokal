@@ -1,5 +1,5 @@
 import CarouselImage from "@/components/common/CarouselImage";
-import { ProductImage, prisma } from "@karya-lokal/database";
+import { ProductImage, prisma } from "database";
 
 const ProductPage = async ({ params }: { params: { productId: string } }) => {
   let product = null;

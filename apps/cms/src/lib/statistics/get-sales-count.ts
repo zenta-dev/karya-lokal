@@ -1,4 +1,4 @@
-import { prisma } from "@karya-lokal/database";
+import { prisma } from "database";
 
 export const getSalesCount = async (userId: string) => {
   const salesCount = await prisma.order.count({

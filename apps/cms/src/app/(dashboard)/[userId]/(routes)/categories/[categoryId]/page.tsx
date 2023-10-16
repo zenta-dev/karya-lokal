@@ -1,6 +1,6 @@
 import { CategoryForm } from "./components/category-form";
 
-import { prisma } from "@karya-lokal/database";
+import { prisma } from "database";
 const CategoryPage = async ({
   params,
 }: {

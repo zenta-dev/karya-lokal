@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Discount, Product } from "@karya-lokal/database";
+import { Discount, Product } from "database";
 import axios from "axios";
 import { CalendarIcon, Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";

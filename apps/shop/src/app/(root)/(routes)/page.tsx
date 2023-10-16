@@ -18,7 +18,7 @@
 
 // export default SetupPage;
 import { HeroProducts } from "@/components/product/hero";
-import { prisma } from "@karya-lokal/database";
+import { prisma } from "database";
 export default async function HomePage() {
   // find product by order count
   const highProductOrder = await prisma.product.findMany({
@@ -34,7 +34,7 @@ export default async function HomePage() {
     },
   });
   return (
-    <div> 
+    <div>
       <HeroProducts data={highProductOrder} />
     </div>
   );

@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs";
-import { prisma } from "@karya-lokal/database";
+import { prisma } from "database";
 import { NextResponse } from "next/server";
 export async function GET(
   req: Request,
@@ -75,12 +75,7 @@ export async function PATCH(
 
     const body = await req.json();
 
-    const {
-      name,
-      price,
-      categoryId,
-      images, 
-    } = body;
+    const { name, price, categoryId, images } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });

@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { Category } from "@karya-lokal/database";
+import { Category } from "database";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";

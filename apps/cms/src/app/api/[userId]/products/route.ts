@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs";
-import { prisma } from "@karya-lokal/database";
+import { prisma } from "database";
 import { NextResponse } from "next/server";
 export async function POST(
   req: Request,
@@ -108,4 +108,3 @@ export async function GET(
     return new NextResponse("Internal error", { status: 500 });
   }
 }
- 

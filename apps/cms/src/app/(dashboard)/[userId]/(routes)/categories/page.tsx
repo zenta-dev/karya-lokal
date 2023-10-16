@@ -1,11 +1,10 @@
-import { prisma } from "@karya-lokal/database";
+import { prisma } from "database";
 
 import { CategoriesClient } from "./components/client";
 import { CategoryColumn } from "./components/columns";
 
 const CategoriesPage = async ({ params }: { params: { userId: string } }) => {
   const categories = await prisma.category.findMany({});
-  
 
   const formattedCategories: CategoryColumn[] = categories.map((item) => ({
     id: item.id,

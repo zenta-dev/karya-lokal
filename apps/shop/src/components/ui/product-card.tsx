@@ -7,7 +7,7 @@ import { MouseEventHandler, useEffect, useState } from "react";
 import Currency from "@/components/ui/currency";
 import useCart from "@/hooks/use-cart";
 import usePreviewModal from "@/hooks/use-preview-modal";
-import { Category } from "@karya-lokal/database";
+import { Category } from "database";
 import axios from "axios";
 import Image from "next/image";
 import { Product } from "../../../types";

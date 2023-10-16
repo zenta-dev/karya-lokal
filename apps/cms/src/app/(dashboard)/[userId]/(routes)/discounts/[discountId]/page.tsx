@@ -1,6 +1,6 @@
 import { DiscountForm } from "./components/discount-form";
 
-import { prisma } from "@karya-lokal/database";
+import { prisma } from "database";
 const DiscountPage = async ({
   params,
 }: {

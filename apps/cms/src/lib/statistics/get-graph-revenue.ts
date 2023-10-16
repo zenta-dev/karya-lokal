@@ -1,4 +1,4 @@
-import { prisma } from "@karya-lokal/database";
+import { prisma } from "database";
 
 interface GraphData {
   name: string;

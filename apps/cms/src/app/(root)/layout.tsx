@@ -1,6 +1,6 @@
 import { currentUser } from "@clerk/nextjs";
 import type { User } from "@clerk/nextjs/api";
-import { prisma } from "@karya-lokal/database";
+import { prisma } from "database";
 import { redirect } from "next/navigation";
 
 export default async function SetupLayout({

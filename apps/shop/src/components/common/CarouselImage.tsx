@@ -1,6 +1,6 @@
 "use client";
 import { Box } from "@chakra-ui/react";
-import { ProductImage } from "@karya-lokal/database";
+import { ProductImage } from "database";
 import Slider from "react-slick";
 export interface ImageCardProps {
   images: ProductImage[];

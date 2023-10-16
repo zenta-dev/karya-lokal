@@ -31,12 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import {
-  Category,
-  Product,
-  ProductImage,
-  ProductVariant,
-} from "@karya-lokal/database";
+import { Category, Product, ProductImage, ProductVariant } from "database";
 
 const formSchema = z.object({
   name: z.string().min(1),

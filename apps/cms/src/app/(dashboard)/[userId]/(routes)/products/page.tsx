@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 
 import { formatter } from "@/lib/utils";
-import { prisma } from "@karya-lokal/database";
+import { prisma } from "database";
 
 import { ProductsClient } from "./components/client";
 import { ProductColumn } from "./components/columns";

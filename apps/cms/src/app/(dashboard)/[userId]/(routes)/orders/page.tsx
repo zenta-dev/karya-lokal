@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 
-import { prisma } from "@karya-lokal/database";
+import { prisma } from "database";
 
 import { OrderClient } from "./components/client";
 import { OrderColumn } from "./components/columns";

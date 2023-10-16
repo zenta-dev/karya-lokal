@@ -1,4 +1,4 @@
-import { prisma } from "@karya-lokal/database";
+import { prisma } from "database";
 
 import { ProductForm } from "./components/product-form";
 
