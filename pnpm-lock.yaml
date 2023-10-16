@@ -9,7 +9,7 @@ importers:
   .:
     devDependencies:
       eslint:
-        specifier: ^8.48.0
+        specifier: ^8.51.0
         version: 8.51.0
       prettier:
         specifier: ^3.0.3
@@ -18,7 +18,7 @@ importers:
         specifier: workspace:*
         version: link:packages/tsconfig
       turbo:
-        specifier: latest
+        specifier: ^1.10.15
         version: 1.10.15
 
   apps/admin:
@@ -39,7 +39,7 @@ importers:
         specifier: ^1.0.4
         version: 1.0.4(@types/react-dom@18.2.5)(@types/react@18.2.12)(react-dom@18.2.0)(react@18.2.0)
       '@radix-ui/react-dialog':
-        specifier: ^1.0.4
+        specifier: ^1.0.5
         version: 1.0.5(@types/react-dom@18.2.5)(@types/react@18.2.12)(react-dom@18.2.0)(react@18.2.0)
       '@radix-ui/react-dropdown-menu':
         specifier: ^2.0.5
