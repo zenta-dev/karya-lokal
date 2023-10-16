@@ -11,7 +11,7 @@ export default async function SetupLayout({
   const data: User | null = await currentUser();
   const user = await prisma.user.findUnique({
     where: {
-      email: data?.emailAddresses[0].emailAddress,
+      email: data?.emailAddresses[0].emailAddress ?? "undefined",
     },
   });
 
