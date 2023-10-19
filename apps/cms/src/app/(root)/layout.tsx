@@ -1,6 +1,5 @@
 import { currentUser } from "@clerk/nextjs";
-import type { User } from "@clerk/nextjs/api";
-import { prisma } from "database";
+import { prisma } from "@karya-lokal/database";
 import { redirect } from "next/navigation";
 
 export default async function SetupLayout({
@@ -8,19 +7,43 @@ export default async function SetupLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const data: User | null = await currentUser();
-  const user = await prisma.user.findUnique({
-    where: {
-      email: data?.emailAddresses[0].emailAddress ?? "undefined",
-    },
-  });
+  const userSession = await currentUser();
 
-  if (!user) {
+  if (!userSession) {
     redirect("/sign-in");
   }
 
-  if (user) {
-    redirect(`/${user.id}`);
+  const user = await prisma.user.upsert({
+    where: {
+      externalId: userSession?.id,
+    },
+    create: {
+      externalId: userSession?.id,
+      username: userSession?.username,
+      email: userSession?.emailAddresses[0].emailAddress,
+      firstName: userSession?.firstName,
+      lastName: userSession?.lastName,
+      image: userSession?.imageUrl,
+      authStrategy: userSession?.emailAddresses[0].verification?.strategy,
+    },
+    update: {
+      email: userSession?.emailAddresses[0].emailAddress,
+      username: userSession?.username,
+      firstName: userSession?.firstName,
+      lastName: userSession?.lastName,
+      image: userSession?.imageUrl,
+      authStrategy: userSession?.emailAddresses[0].verification?.strategy,
+    },
+  });
+  console.log(user);
+  const store = await prisma.store.findUnique({
+    where: {
+      userId: user.id,
+    },
+  });
+  console.log(store);
+  if (store) {
+    redirect(`/${store.name}`);
   }
 
   return <>{children}</>;

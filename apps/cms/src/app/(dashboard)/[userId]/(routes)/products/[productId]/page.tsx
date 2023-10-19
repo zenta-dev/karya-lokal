@@ -1,4 +1,4 @@
-import { prisma } from "database";
+import { prisma } from "@karya-lokal/database";
 
 import { ProductForm } from "./components/product-form";
 
@@ -9,26 +9,23 @@ const ProductPage = async ({
 }) => {
   let product = null;
   if (params.productId !== "new") {
-    product = await prisma.product.findUnique({
+    product = await prisma.storeProduct.findUnique({
       where: {
         id: params.productId,
       },
-      include: {
-        images: true,
-      },
+      include: { category: true, variant: true },
     });
   }
 
   const categories = await prisma.category.findMany();
 
-  const variants = await prisma.productVariant.findMany();
-
   return (
-    <div className="flex-col">
-      <div className="flex-1 space-y-4 p-8 pt-6">
+    <div className=" max-w-4xl mx-auto">
+      <div className="flex-1 space-y-2 p-8 pt-6">
         <ProductForm
           categories={categories}
-          variants={variants}
+          // colors={colors}
+          // sizes={sizes}
           initialData={product}
         />
       </div>

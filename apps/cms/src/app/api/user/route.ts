@@ -1,30 +1,32 @@
-import { prisma } from "database";
-import { NextRequest, NextResponse } from "next/server";
-export async function POST(req: NextRequest) {
+import { auth } from "@clerk/nextjs";
+import { NextResponse } from "next/server";
+
+import { prisma } from "@karya-lokal/database";
+
+export async function POST(req: Request) {
   try {
+    const { userId } = auth();
     const body = await req.json();
-    console.log("[API SERVER] POST /api/user:\n", body);
-    if (!body.primaryEmailAddress.emailAddress) {
-      throw new Error("Email is required");
+
+    const { name } = body;
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 403 });
     }
-    const user = await prisma.user.findFirst({
-      where: { email: body.email },
+
+    if (!name) {
+      return new NextResponse("Name is required", { status: 400 });
+    }
+
+    const store = await prisma.user.create({
+      data: {
+        name,
+      },
     });
-    if (!user) {
-      await prisma.user.create({
-        data: {
-          email: body.primaryEmailAddress.emailAddress,
-          name: body.fullName,
-          authStrategy: body.primaryEmailAddress.verification.strategy,
-          image: body.imageUrl,
-          phone: body.primaryPhoneNumber,
-          createdAt: body.createdAt,
-          updatedAt: body.updatedAt,
-        },
-      });
-    }
-    return new NextResponse(JSON.stringify(user), { status: 200 });
-  } catch (e: any) {
-    return new NextResponse(e.toString(), { status: 500 });
+
+    return NextResponse.json(store);
+  } catch (error) {
+    console.log("[STORES_POST]", error);
+    return new NextResponse("Internal error", { status: 500 });
   }
 }

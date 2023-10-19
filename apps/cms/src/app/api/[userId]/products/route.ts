@@ -1,16 +1,27 @@
 import { auth } from "@clerk/nextjs";
-import { prisma } from "database";
 import { NextResponse } from "next/server";
+
+import { prisma } from "@karya-lokal/database";
+
 export async function POST(
   req: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: { storeId: string } }
 ) {
   try {
     const { userId } = auth();
 
     const body = await req.json();
-    console.log("🚀 ~ file: route.ts ~ line 11 ~ POST ~ body", body);
-    const { name, price, categoryId, description, stock, images } = body;
+
+    const {
+      name,
+      price,
+      categoryId,
+      colorId,
+      sizeId,
+      images,
+      isFeatured,
+      isArchived,
+    } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -32,38 +43,42 @@ export async function POST(
       return new NextResponse("Category id is required", { status: 400 });
     }
 
-    if (!description) {
-      return new NextResponse("Description is required", { status: 400 });
+    if (!colorId) {
+      return new NextResponse("Color id is required", { status: 400 });
     }
 
-    if (!stock) {
-      return new NextResponse("Stock is required", { status: 400 });
+    if (!sizeId) {
+      return new NextResponse("Size id is required", { status: 400 });
     }
 
-    const storeByUserId = await prisma.user.findFirst({
+    if (!params.storeId) {
+      return new NextResponse("Store id is required", { status: 400 });
+    }
+
+    const storeByUserId = await prisma.store.findFirst({
       where: {
-        id: params.userId,
+        id: params.storeId,
+        userId,
       },
     });
 
     if (!storeByUserId) {
       return new NextResponse("Unauthorized", { status: 405 });
     }
-    console.log(
-      "🚀 ~ file: route.ts ~ line 59 ~ POST ~ storeByUserId",
-      images.map((image: { url: string }) => image)
-    );
+
     const product = await prisma.product.create({
       data: {
         name,
         price,
-        description,
-        stock,
+        isFeatured,
+        isArchived,
         categoryId,
-        userId: params.userId,
+        colorId,
+        sizeId,
+        storeId: params.storeId,
         images: {
           createMany: {
-            data: images.map((image: { url: string }) => image),
+            data: [...images.map((image: { url: string }) => image)],
           },
         },
       },
@@ -78,24 +93,33 @@ export async function POST(
 
 export async function GET(
   req: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: { storeId: string } }
 ) {
   try {
     const { searchParams } = new URL(req.url);
     const categoryId = searchParams.get("categoryId") || undefined;
+    const colorId = searchParams.get("colorId") || undefined;
+    const sizeId = searchParams.get("sizeId") || undefined;
+    const isFeatured = searchParams.get("isFeatured");
 
-    if (!params.userId) {
+    if (!params.storeId) {
       return new NextResponse("Store id is required", { status: 400 });
     }
 
     const products = await prisma.product.findMany({
       where: {
-        userId: params.userId,
+        storeId: params.storeId,
         categoryId,
+        colorId,
+        sizeId,
+        isFeatured: isFeatured ? true : undefined,
+        isArchived: false,
       },
       include: {
         images: true,
         category: true,
+        color: true,
+        size: true,
       },
       orderBy: {
         createdAt: "desc",

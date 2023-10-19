@@ -1,19 +1,18 @@
 import { format } from "date-fns";
 
-import { formatter } from "@/lib/utils";
-import { prisma } from "database";
+import { prisma } from "@karya-lokal/database";
 
 import { ProductsClient } from "./components/client";
 import { ProductColumn } from "./components/columns";
 
 const ProductsPage = async ({ params }: { params: { userId: string } }) => {
-  const products = await prisma.product.findMany({
+  const products = await prisma.storeProduct.findMany({
     where: {
-      userId: params.userId,
+      storeName: params.userId,
     },
     include: {
       category: true,
-      variants: true,
+      variant: true,
     },
     orderBy: {
       createdAt: "desc",
@@ -23,8 +22,12 @@ const ProductsPage = async ({ params }: { params: { userId: string } }) => {
   const formattedProducts: ProductColumn[] = products.map((item) => ({
     id: item.id,
     name: item.name,
-    price: formatter.format(item.price),
+    // isFeatured: item.isFeatured,
+    // isArchived: item.isArchived,
+    variant: item.variant,
     category: item.category.name,
+    // size: item.size.name,
+    // color: item.color.value,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
   }));
 

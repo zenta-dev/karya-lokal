@@ -8,7 +8,6 @@ import { DataTable } from "@/components/ui/data-table";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 
-import { useState } from "react";
 import { ProductColumn, columns } from "./columns";
 
 interface ProductsClientProps {
@@ -16,7 +15,6 @@ interface ProductsClientProps {
 }
 
 export const ProductsClient: React.FC<ProductsClientProps> = ({ data }) => {
-  const [rowSelection, setRowSelection] = useState({});
   const params = useParams();
   const router = useRouter();
 
@@ -32,13 +30,7 @@ export const ProductsClient: React.FC<ProductsClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator />
-      <DataTable
-        searchKey="name"
-        columns={columns}
-        data={data}
-        rowSelection={rowSelection}
-        setRowSelection={setRowSelection}
-      />
+      <DataTable searchKey="name" columns={columns} data={data} />
     </>
   );
 };

@@ -1,6 +1,8 @@
 import { auth } from "@clerk/nextjs";
-import { prisma } from "database";
 import { NextResponse } from "next/server";
+
+import { prisma } from "@karya-lokal/database";
+
 export async function GET(
   req: Request,
   { params }: { params: { productId: string } }
@@ -17,7 +19,8 @@ export async function GET(
       include: {
         images: true,
         category: true,
-        variants: true,
+        size: true,
+        color: true,
       },
     });
 
@@ -30,7 +33,7 @@ export async function GET(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { productId: string; userId: string } }
+  { params }: { params: { productId: string; storeId: string } }
 ) {
   try {
     const { userId } = auth();
@@ -43,13 +46,14 @@ export async function DELETE(
       return new NextResponse("Product id is required", { status: 400 });
     }
 
-    const userByUserId = await prisma.user.findFirst({
+    const storeByUserId = await prisma.store.findFirst({
       where: {
-        id: params.userId,
+        id: params.storeId,
+        userId,
       },
     });
 
-    if (!userByUserId) {
+    if (!storeByUserId) {
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
@@ -68,14 +72,23 @@ export async function DELETE(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { productId: string; userId: string } }
+  { params }: { params: { productId: string; storeId: string } }
 ) {
   try {
     const { userId } = auth();
 
     const body = await req.json();
 
-    const { name, price, categoryId, images } = body;
+    const {
+      name,
+      price,
+      categoryId,
+      images,
+      colorId,
+      sizeId,
+      isFeatured,
+      isArchived,
+    } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -97,13 +110,26 @@ export async function PATCH(
       return new NextResponse("Price is required", { status: 400 });
     }
 
-    const userByUserId = await prisma.user.findFirst({
+    if (!categoryId) {
+      return new NextResponse("Category id is required", { status: 400 });
+    }
+
+    if (!colorId) {
+      return new NextResponse("Color id is required", { status: 400 });
+    }
+
+    if (!sizeId) {
+      return new NextResponse("Size id is required", { status: 400 });
+    }
+
+    const storeByUserId = await prisma.store.findFirst({
       where: {
-        id: params.userId,
+        id: params.storeId,
+        userId,
       },
     });
 
-    if (!userByUserId) {
+    if (!storeByUserId) {
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
@@ -115,9 +141,13 @@ export async function PATCH(
         name,
         price,
         categoryId,
+        colorId,
+        sizeId,
         images: {
           deleteMany: {},
         },
+        isFeatured,
+        isArchived,
       },
     });
 

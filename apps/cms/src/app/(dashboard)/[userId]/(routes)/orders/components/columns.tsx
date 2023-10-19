@@ -3,7 +3,12 @@
 import { ColumnDef } from "@tanstack/react-table"
 
 export type OrderColumn = {
-  id: string; 
+  id: string;
+  // phone: string;
+  // address: string;
+  // isPaid: boolean;
+  // totalPrice: string;
+  // products: string;
   createdAt: string;
 }
 

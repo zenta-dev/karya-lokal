@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
 import { stripe } from "@/lib/stripe";
-import { prisma } from "database";
+import { prisma } from "@karya-lokal/database";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,7 +16,7 @@ export async function OPTIONS() {
 
 export async function POST(
   req: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: { storeId: string } }
 ) {
   const { productIds } = await req.json();
 
@@ -42,19 +42,16 @@ export async function POST(
         product_data: {
           name: product.name,
         },
-        unit_amount: product.price * 100,
+        unit_amount: product.price.toNumber() * 100,
       },
     });
   });
 
   const order = await prisma.order.create({
     data: {
-      userId: params.userId,
-      total: products.reduce((total, product) => {
-        return total + product.price;
-      }, 0),
-
-      items: {
+      storeId: params.storeId,
+      isPaid: false,
+      orderItems: {
         create: productIds.map((productId: string) => ({
           product: {
             connect: {
@@ -73,8 +70,8 @@ export async function POST(
     phone_number_collection: {
       enabled: true,
     },
-    success_url: `${process.env.FRONTEND_USER_URL}/cart?success=1`,
-    cancel_url: `${process.env.FRONTEND_USER_URL}/cart?canceled=1`,
+    success_url: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
+    cancel_url: `${process.env.FRONTEND_STORE_URL}/cart?canceled=1`,
     metadata: {
       orderId: order.id,
     },

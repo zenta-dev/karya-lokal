@@ -13,6 +13,12 @@
     },
     "generate": {
       "dependsOn": ["^generate"]
-    }
+    },
+    "start": {
+      "dependsOn": ["^start"]
+    },
+    "db:migrate:deploy": {},
+    "db:push": {},
+    "db:seed": {}
   }
 }

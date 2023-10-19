@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs";
-import { prisma } from "database";
 import { NextResponse } from "next/server";
+
+import { prisma } from "@karya-lokal/database";
 
 export async function POST(
   req: Request,
@@ -22,7 +23,7 @@ export async function POST(
     }
 
     if (!params.userId) {
-      return new NextResponse("User id is required", { status: 400 });
+      return new NextResponse("user id is required", { status: 400 });
     }
 
     const userByUserId = await prisma.user.findFirst({
@@ -37,7 +38,8 @@ export async function POST(
 
     const category = await prisma.category.create({
       data: {
-        name,
+        name, 
+        userId: params.userId,
       },
     });
 
@@ -54,10 +56,14 @@ export async function GET(
 ) {
   try {
     if (!params.userId) {
-      return new NextResponse("User id is required", { status: 400 });
+      return new NextResponse("user id is required", { status: 400 });
     }
 
-    const categories = await prisma.category.findMany({});
+    const categories = await prisma.category.findMany({
+      where: {
+        userId: params.userId,
+      },
+    });
 
     return NextResponse.json(categories);
   } catch (error) {
