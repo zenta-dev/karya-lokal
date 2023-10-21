@@ -1,5 +1,3 @@
-import { format } from "date-fns";
-
 import { prisma } from "@karya-lokal/database";
 
 import { ProductsClient } from "./components/client";
@@ -22,15 +20,17 @@ const ProductsPage = async ({ params }: { params: { userId: string } }) => {
   const formattedProducts: ProductColumn[] = products.map((item) => ({
     id: item.id,
     name: item.name,
-    // isFeatured: item.isFeatured,
-    // isArchived: item.isArchived,
+    description: item.description,
+    categoryId: item.categoryId,
+    price: item.price,
+    images: item.images,
+    discountId: item.discountId,
+    userCartId: item.userCartId,
     variant: item.variant,
-    category: item.category.name,
-    // size: item.size.name,
-    // color: item.color.value,
-    createdAt: format(item.createdAt, "MMMM do, yyyy"),
+    category: item.category,
+    createdAt: item.createdAt,
   }));
-
+  console.log(formattedProducts);
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">

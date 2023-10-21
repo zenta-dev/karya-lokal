@@ -52,7 +52,6 @@ const categories = [
 function seed() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log("Seeding database...");
             for (const category of categories) {
                 yield _1.prisma.category.upsert({
                     where: { slug: category.slug },

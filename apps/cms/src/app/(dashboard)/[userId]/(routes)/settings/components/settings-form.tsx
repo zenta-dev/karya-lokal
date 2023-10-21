@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User } from "@karya-lokal/database";
+import { Store } from "@karya-lokal/database";
 import axios from "axios";
 import { Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -22,25 +22,39 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Heading } from "@/components/ui/heading";
+import ImageUpload from "@/components/ui/image-upload";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useOrigin } from "@/hooks/use-origin";
 
 const formSchema = z.object({
-  // { id: string; email: string | null; password: string | null; authStrategy: string | null; image: string | null; phone: string | null; name: string | null; role: UserRole; createdAt: Date; updatedAt: Date; }
-  id: z.string().min(2),
-  email: z.string().min(2).nullable(),
-  password: z.string().min(2).nullable(),
-  authStrategy: z.string().min(2).nullable(),
-  image: z.string().min(2).nullable(),
-  phone: z.string().min(2).nullable(),
-  name: z.string().min(2).nullable(),
-  role: z.string().min(2),
+  id: z.string(),
+  name: z.string(),
+  logo: z.string(),
+  banner: z.string().nullable(),
+  about: z.string().nullable(),
+  userId: z.string().nullable(),
+  Address: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        address: z.string(),
+        city: z.string(),
+        state: z.string(),
+        zip: z.string(),
+        country: z.string(),
+      })
+    )
+    .optional(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });
 
 type SettingsFormValues = z.infer<typeof formSchema>;
 
 interface SettingsFormProps {
-  initialData: User;
+  initialData: Store;
 }
 
 export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
@@ -115,12 +129,82 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
           <div className="grid grid-cols-3 gap-8">
             <FormField
               control={form.control}
+              name="logo"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Logo</FormLabel>
+                  <FormControl>
+                    <ImageUpload
+                      value={[field.value]}
+                      disabled={loading}
+                      onChange={(url) => field.onChange({ url })}
+                      onRemove={(url) => field.onChange({ url: "" })}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    {/* <Input disabled={loading} placeholder="Store name" {...field} /> */}
+                    <Input
+                      disabled={loading}
+                      placeholder="Store name"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />{" "}
+            <FormField
+              control={form.control}
+              name="about"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>About </FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="About"
+                      {...field}
+                      value={field.value || ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="Address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Address</FormLabel>
+                  <FormControl>
+                    {field.value?.map((address, index) => (
+                      <div key={index} className="flex flex-col space-y-4">
+                        <div className="flex flex-row items-center justify-between">
+                          <div className="flex flex-col space-y-1">
+                            <div className="text-sm font-medium"></div>
+                            <div className="text-sm font-medium">
+                              {address.address}
+                            </div>
+                            <div className="text-sm font-medium">
+                              {address.city}, {address.state} {address.zip}
+                            </div>
+                            <div className="text-sm font-medium">
+                              {address.country}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </FormControl>
                   <FormMessage />
                 </FormItem>

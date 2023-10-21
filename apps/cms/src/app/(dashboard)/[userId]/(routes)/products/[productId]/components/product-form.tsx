@@ -1,15 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Category } from "@karya-lokal/database";
-import axios from "axios";
-import { Trash } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
-import * as z from "zod";
-
 import { AlertModal } from "@/components/modals/alert-modal";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -35,25 +25,49 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { ColumnDef } from "@tanstack/react-table";
-import { ProductColumn, Variant } from "./columns";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Category, ProductVariant, SubVariant } from "@karya-lokal/database";
+import axios from "axios";
+import { Trash } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import * as z from "zod";
+import { ProductColumn } from "../../components/columns";
+import { columns } from "./columns";
 
 const formSchema = z.object({
   name: z.string().min(5),
   description: z.string().min(10),
-  images: z.object({ url: z.string() }).array(),
-  category0: z.string().min(10),
-  category1: z.string().min(10),
-  var1: z.string().min(1),
-  var2: z.string().min(1),
-  variants: z.object({}),
+  images: z.array(z.object({ url: z.string() })),
+  categoryId: z.string(),
+  category0: z.string().optional(),
+  category1: z.string().optional(),
+  variant: z.array(
+    z.object({
+      type: z.string(),
+      name: z.string(),
+      price: z.number(),
+      stock: z.number(),
+      values: z.array(
+        z.object({
+          type: z.string(),
+          name: z.string(),
+          price: z.number(),
+          stock: z.number(),
+        })
+      ),
+    })
+  ),
+  price: z.coerce.number().min(1),
   isArchived: z.boolean().default(false).optional(),
 });
 
 type ProductFormValues = z.infer<typeof formSchema>;
 
 interface ProductFormProps {
-  initialData: any | null;
+  initialData: ProductColumn | null;
   categories: Category[];
 }
 
@@ -66,35 +80,69 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 
   const [category1, setCategory1] = useState<any>(false);
   const [category2, setCategory2] = useState<any>(false);
-  const [columns, setColumns] = useState<ColumnDef<ProductColumn>[]>([]);
+  const [variantTable, setVariantTable] = useState<any>(false);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const title = initialData ? "Edit product" : "Create product";
-  const description = initialData ? "Edit a product." : "Add a new product";
-  const toastMessage = initialData ? "Product updated." : "Product created.";
-  const action = initialData ? "Save changes" : "Create";
 
   const defaultValues = initialData
     ? {
         ...initialData,
       }
     : {
-        productCode: "",
         name: "",
         description: "",
         categoryId: "",
+        price: 0,
         images: [],
+        discountId: null,
+        userCartId: null,
+        category: null,
+        productCode: "",
+        variant: [
+          {
+            name: "",
+            values: [{ name: "", price: 0, stock: 0 }],
+          },
+        ],
         isArchived: false,
       };
+
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
+  const title = initialData ? "Edit product" : "Create product";
+  const description = initialData ? "Edit a product." : "Add a new product";
+  const toastMessage = initialData ? "Product updated." : "Product created.";
+  const action = initialData ? "Save changes" : "Create";
 
+  useEffect(() => {
+    if (initialData?.category) {
+      setCategory1(
+        categories.find((category) => category.id === initialData.categoryId)
+          ?.parentSlug
+      );
+      setCategory2(
+        categories.find((category) => category.id === initialData.categoryId)
+          ?.slug
+      );
+    }
+  }, [categories, initialData?.category, initialData?.categoryId]);
   const onSubmit = async (data: ProductFormValues) => {
+    console.log("SUBMIT");
+    console.log(data);
+
     try {
       setLoading(true);
+      console.log(category2);
+      if (!initialData?.category || !category2) {
+        throw new Error("Please select a category");
+      }
+      data.categoryId = category2;
+
+      delete data.category0;
+      delete data.category1;
+
       if (initialData) {
         await axios.patch(
           `/api/${params.userId}/products/${params.productId}`,
@@ -105,9 +153,15 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       }
       router.refresh();
       router.push(`/${params.userId}/products`);
+
       toast.success(toastMessage);
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      console.log(error);
+      if (error.message === "Please select a category") {
+        toast.error(error.message);
+      } else {
+        toast.error(error.response.data);
+      }
     } finally {
       setLoading(false);
     }
@@ -126,160 +180,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       setLoading(false);
       setOpen(false);
     }
-  };
-  const [tmpVar1, setTmpVar1] = useState<Variant[]>([
-    { name: "", price: 0, stock: 0 },
-  ]);
-  const [tmpVar2, setTmpVar2] = useState<Variant[]>([
-    { name: "", price: 0, stock: 0 },
-  ]);
-  const [variants, setVariants] = useState<ProductColumn[]>([]);
-
-  const renderVar1SubVariants = () => {
-    return tmpVar1.map((value, index) => (
-      <FormItem key={index}>
-        <FormLabel>
-          Variant {form.watch("var1")} {index + 1}
-        </FormLabel>
-        <FormControl>
-          <div className="flex flex-row items-center space-x-2">
-            <Input
-              disabled={loading}
-              placeholder={`Variant ${form.watch("var1")} ${index + 1} value`}
-              value={value.name}
-              onChange={(e) => {
-                tmpVar1[index].name = e.target.value;
-                setTmpVar1([...tmpVar1]);
-                if (index === tmpVar1.length - 1) {
-                  setTmpVar1([...tmpVar1, { name: "", price: 0, stock: 0 }]);
-                }
-                updateVariant();
-              }}
-            />
-            <button
-              disabled={loading}
-              onClick={() => {
-                const newTmpVar1 = tmpVar1.filter((_, i) => i !== index);
-                setTmpVar1(newTmpVar1);
-              }}
-              type="button"
-            >
-              <Trash className="h-4 w-4" />
-            </button>
-          </div>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    ));
-  };
-  const updateVariant = () => {
-    setColumns([
-      {
-        accessorKey: "name",
-        header: form.watch("var1"),
-      },
-      {
-        accessorKey: "values",
-        header: form.watch("var2"),
-        cell: ({ row }) => (
-          <div className="">
-            {row.original.values.map((item) => (
-              <div
-                className={
-                  item.name === ""
-                    ? "hidden"
-                    : "border   border-red-600 p-2  max-w-[100px] max-h-[100px] "
-                }
-                key={item.name}
-              >
-                {item.name}
-              </div>
-            ))}
-          </div>
-        ),
-      },
-      {
-        accessorKey: "price",
-        header: "Price",
-        cell: ({ row }) => (
-          <div className="">
-            {row.original.values.map((item, index) => (
-              <div key={item.name}>
-                <Input
-                  disabled={loading}
-                  placeholder="Price"
-                  value={item.price}
-                  onChange={(e) => {
-                    tmpVar2[index].price = parseInt(e.target.value);
-                    setTmpVar2([...tmpVar2]);
-                    updateVariant();
-                  }}
-                />
-              </div>
-            ))}
-          </div>
-        ),
-      },
-      {
-        accessorKey: "stock",
-        header: "Stock",
-        cell: ({ row }) => (
-          <div className="">
-            {row.original.values.map((item) => (
-              <div key={item.name}>{item.stock}</div>
-            ))}
-          </div>
-        ),
-      },
-    ]);
-    setVariants(
-      tmpVar1.map((item) => ({
-        name: item.name,
-        values: tmpVar2.map((item2) => ({
-          name: item2.name,
-          price: item2.price,
-          stock: item2.stock,
-        })),
-      }))
-    );
-  };
-  const renderVar2SubVariants = () => {
-    return tmpVar2.map((value, index) => (
-      <FormItem key={index}>
-        <FormLabel>
-          Variant {form.watch("var1")} {index + 1}
-        </FormLabel>
-        <FormControl>
-          <div className="flex flex-row items-center space-x-2">
-            <Input
-              disabled={loading}
-              placeholder={`Variant ${index + 1} value`}
-              value={value.name}
-              onChange={(e) => {
-                tmpVar2[index].name = e.target.value;
-                setTmpVar2([...tmpVar2]);
-                if (index === tmpVar2.length - 1) {
-                  setTmpVar2([...tmpVar2, { name: "", price: 0, stock: 0 }]);
-                }
-                updateVariant();
-              }}
-            />
-            <br />
-            <button
-              disabled={loading}
-              onClick={() => {
-                const newTmpVar2 = tmpVar2.filter((_, i) => i !== index);
-                setTmpVar2(newTmpVar2);
-              }}
-              type="button"
-            >
-              <Trash className="h-4 w-4" />
-            </button>
-          </div>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    ));
   };
   return (
     <>
@@ -392,7 +292,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                             console.log(value);
                           }}
                           value={field.value}
-                          defaultValue={field.value}
+                          defaultValue={
+                            initialData?.category
+                              ? initialData?.category.parentSlug || ""
+                              : field.value
+                          }
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -419,7 +323,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                       </FormItem>
                     )}
                   />
-                  {category1 ? (
+                  {category1 || initialData?.category ? (
                     <FormField
                       control={form.control}
                       name="category1"
@@ -434,9 +338,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                                   (category) => category.slug === value
                                 )
                               );
+                              console.log(value);
                             }}
                             value={field.value}
-                            defaultValue={field.value}
+                            defaultValue={
+                              initialData?.category
+                                ? initialData?.category.slug || ""
+                                : field.value
+                            }
                           >
                             <FormControl>
                               <SelectTrigger>
@@ -449,7 +358,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                             <SelectContent>
                               {categories.map((category) =>
                                 category.level === 1 &&
-                                category.parentSlug === category1.slug ? (
+                                category.parentSlug ===
+                                  (category1.slug ||
+                                    initialData?.category.parentSlug) ? (
                                   <SelectItem
                                     key={category.slug}
                                     value={category.slug || ""}
@@ -467,58 +378,134 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                   ) : null}
                 </div>
               </div>
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Price</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={loading}
+                        placeholder="Product price"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-          </div>{" "}
+          </div>
           <div className="border p-4 rounded-xl space-y-2">
-            <h1 className="text-xl font-bold">Variants</h1>
+            <h1 className="text-xl font-bold">Variant</h1>
             <p className="text-gray-500 mb-8">
               Enter the details of your product
             </p>
             <Separator />
-            <div className=" grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="var1"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Variant 1</FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={loading}
-                        placeholder="ex: Colors"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <br />
-              {form.watch("var1") ? renderVar1SubVariants() : null}
-            </div>
-            <div className=" grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="var2"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Variant 2</FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={loading}
-                        placeholder="ex: Sizes"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <br />
-              {form.watch("var2") ? renderVar2SubVariants() : null}
-            </div>
+            <FormField
+              control={form.control}
+              name="variant"
+              render={(field) => (
+                <FormItem>
+                  <div className=" grid grid-cols-2 gap-4">
+                    {initialData?.variant.map(
+                      (item: ProductVariant, index: number) => (
+                        <FormField
+                          key={item.name}
+                          name={`variant.${index}.name`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Variant {index + 1}</FormLabel>
+                              <FormControl>
+                                <Input
+                                  disabled={loading}
+                                  placeholder="e.g. Size or Color"
+                                  {...field}
+                                />
+                              </FormControl>
+
+                              {item.values.map(
+                                (subItem: SubVariant, subIndex: number) => (
+                                  <FormField
+                                    key={subItem.name}
+                                    name={`variant.${index}.values.${subIndex}.name`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>
+                                          Options {item.name} {subIndex + 1}
+                                        </FormLabel>
+                                        <FormControl>
+                                          <Input
+                                            disabled={loading}
+                                            placeholder="e.g. Red or Blue"
+                                            {...field}
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                )
+                              )}
+                            </FormItem>
+                          )}
+                        />
+                      )
+                    )}
+                  </div>
+                </FormItem>
+              )}
+            />
           </div>
-          <DataTable columns={columns} data={variants} />
+          <DataTable
+            columns={columns({
+              header1: form.getValues().variant[0]?.type || "Variant",
+              header2: form.getValues().variant[1]?.values[0].type || "Options",
+              onChange: (e) => { 
+                const ids = e.id.split("-");
+                const variant = form.getValues().variant;
+
+                const type = e.type;
+                const value = parseInt(e.value);
+
+                variant.map((item: any) => {
+                  if (item.name === ids[0]) {
+                    item.values.map((subItem: any) => {
+                      if (subItem.name === ids[1]) {
+                        if (e.type === "price") {
+                          subItem.price = value;
+                        }
+                        if (e.type === "stock") {
+                          subItem.stock = value;
+                        }
+                      }
+                    });
+                  }
+                });
+                form.setValue("variant", variant);
+
+                console.log(variant);
+              },
+            })}
+            data={(form.getValues().variant || []).map((v1Value, rowIndex) => ({
+              rowIndex,
+              name: v1Value.name || "Variant",
+              values: v1Value.values.map((v2Value) => ({
+                ...v2Value,
+                id: `${v1Value.name}-${v2Value.name}`,
+              })),
+              stock: v1Value.values.map((v2Value) => ({
+                ...v2Value,
+                id: `${v1Value.name}-${v2Value.name}`,
+              })),
+              price: v1Value.values.map((v2Value) => ({
+                ...v2Value,
+                id: `${v1Value.name}-${v2Value.name}`,
+              })),
+            }))}
+          />
+
           <FormField
             control={form.control}
             name="isArchived"
@@ -539,7 +526,15 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               </FormItem>
             )}
           />
-          <Button disabled={loading} className="ml-auto" type="submit">
+          <Button
+            disabled={loading}
+            className="ml-auto"
+            // type="submit"
+            onClick={(e) => {
+              e.preventDefault();
+              onSubmit(form.getValues());
+            }}
+          >
             {action}
           </Button>
         </form>

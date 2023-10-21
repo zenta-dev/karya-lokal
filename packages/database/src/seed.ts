@@ -39,7 +39,6 @@ const categories = [
 ];
 export async function seed() {
   try {
-    console.log("Seeding database...");
     for (const category of categories) {
       await prisma.category.upsert({
         where: { slug: category.slug },

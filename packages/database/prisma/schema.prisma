@@ -107,7 +107,7 @@ model UserOrderItem {
 model Category {
   id         String         @id @default(auto()) @map("_id") @db.ObjectId
   name       String
-  slug       String?        @unique
+  slug       String         @unique
   parentSlug String?        @db.String
   level      Int            @default(0)
   products   StoreProduct[]
@@ -117,6 +117,10 @@ model Category {
   @@map("category")
 }
 
+type ProductImage {
+  url String
+}
+
 model StoreProduct {
   id          String           @id @default(auto()) @map("_id") @db.ObjectId
   name        String
@@ -124,7 +128,8 @@ model StoreProduct {
   categoryId  String           @db.ObjectId
   category    Category         @relation(fields: [categoryId], references: [id])
   variant     ProductVariant[]
-  images      Json[]
+  price       Float
+  images      ProductImage[]
   orderItems  UserOrderItem[]
   reviews     ProductReview[]
   Discount    ProductDiscount? @relation(fields: [discountId], references: [id])
@@ -140,12 +145,23 @@ model StoreProduct {
   @@map("store_product")
 }
 
+type SubVariant {
+  type  String
+  name  String
+  price Float
+  stock Int
+}
+
 model ProductVariant {
-  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  type      String
   name      String
+  price     Float
+  stock     Int
   productId String       @db.ObjectId
   product   StoreProduct @relation(fields: [productId], references: [id])
-  values    Json[]
+  values    SubVariant[]
 
   @@map("product_variant")
 }
