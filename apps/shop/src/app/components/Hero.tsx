@@ -1,7 +1,6 @@
-'use client';
-
 import React from "react";
 import Slider from "react-slick";
+import "slick-carousel/slick/slick.css"; // Import the slick carousel CSS
 import Slide from "./Slide";
 
 const Hero = () => {
@@ -11,7 +10,7 @@ const Hero = () => {
         slidesToShow: 1,
         slidesToScroll: 1,
         autoplay: true,
-        pauseOnHouver: false,
+        pauseOnHover: false, // Corrected typo here
     };
 
     const slidesData = [
@@ -33,7 +32,7 @@ const Hero = () => {
             mainTitle: "SOMETHINC MAKE UP BUNDLE",
             price: "Rp.179.000",
         },
-    ]
+    ];
 
     return (
         <div>
@@ -47,7 +46,7 @@ const Hero = () => {
                             key={item.id}
                             img={item.img}
                             mainTitle={item.mainTitle}
-                            price={item.price} title={""}                        />
+                            price={item.price} title={""} />
                     ))}
                 </Slider>
             </div>
