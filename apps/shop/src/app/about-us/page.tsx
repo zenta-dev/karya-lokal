@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 
@@ -7,7 +9,7 @@ interface PropsType {
   desc: string;
 }
 
-const BestSeller: React.FC<PropsType> = ({ title, mainTitle, desc }) => {
+const AboutUs: React.FC<PropsType> = ({ title, mainTitle, desc }) => {
   const [cornerRadius, setCornerRadius] = useState(0);
 
   useEffect(() => {
@@ -25,11 +27,10 @@ const BestSeller: React.FC<PropsType> = ({ title, mainTitle, desc }) => {
   return (
     <div className="pb-10 pt-16 flex flex-col items-center justify-center">
       <div className="text-center">
-        <h2 className="font-medium text-3xl pb-10">Best Seller</h2>
+        <h2 className="font-medium text-3xl pb-10">Jelajahi KaryaLokal</h2>
       </div>
       <div
-        className="bg-[#DBEAFE] py-10 mx-4 relative rounded-3xl"
-      >
+        className="bg-[#DBEAFE] py-10 mx-4 relative rounded-3xl">
         <div className="text-center">
           <h2 className="mt-5 text-blackish text-2xl font-semibold">Check It Out Our Best Product!</h2>
         </div>
@@ -44,22 +45,6 @@ const BestSeller: React.FC<PropsType> = ({ title, mainTitle, desc }) => {
             <h1 className="text-blackish text-[26px] md:text-[30px] lg:text-[20px] font-regular leading-[1.2]">
               Tas mini ini merupakan seni kerajinan yang menggunakan teknik simpul persegi dengan rantaian benang awal dan akhir hingga menghasilkan suatu hasil tenunan.
             </h1>
-            <div className="bottom-0 left-0 my-10">
-              <a
-                href=""
-                className="bg-[#1E3A8A] mb-5 font-medium text-white text-[14px] md:text-[20px] px-12 pt-2.5 pb-2.5 
-                rounded-lg inline-block cursor-pointer hover:bg-blue-600">
-                Lihat Produk
-              </a>
-            </div>
-          </div>
-          <div className=" flex items-center justify-center">
-            <Image
-              src="/Best Seller.svg"
-              alt="Product Image"
-              width={400}
-              height={400}
-            />
           </div>
         </div>
       </div>
@@ -67,4 +52,4 @@ const BestSeller: React.FC<PropsType> = ({ title, mainTitle, desc }) => {
   );
 };
 
-export default BestSeller;
+export default AboutUs

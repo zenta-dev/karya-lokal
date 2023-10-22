@@ -3,76 +3,67 @@ import ProductCard from './ProductCard';
 const productsData = [
     {
         img: "/Tas Selempang.jpeg", 
-        title: "Tas Selempang Croc Kulit", 
-        desc: "Kenakan tas mini yang nyaman dan super bergaya ini dan bebaskan dirimu!", 
+        title: "TAS SELEMPANG CROC KULIT", 
+        price: "44.000",
         rating: 1, 
-        price: "44.000", 
     },
     {
         img: "/Sepatu.jpeg", 
-        title: "Sepatu BeauToday Khaki", 
-        desc: "Didesain dengan desain warna campuran, sepatu kasual ini menjadi tren tak terkalahkan.", 
-        rating: 3, 
-        price: "149.000", 
+        title: "SEPATU BEAUTODAY KHAKI", 
+        price: "149.000",
+        rating: 3,  
     },
     {
         img: "/Meja Belajar.jpeg", 
-        title: "Meja Belajar One Set", 
-        desc: "Buat belajarmu nyaman dengan memakai meja belajar ini, karena ini didesain dengan konsep earthtone.", 
+        title: "MEJA BELAJAR ONE SET", 
+        price: "359.000",
         rating: 2, 
-        price: "359.000", 
     },
     {
         img: "/Kukombo Dress.jpeg", 
-        title: "Gaun Kukombo", 
-        desc: "Gaun bernuansa vintage bermotif bunga siap mewarnai hari-harimu!", 
+        title: "GAUN KUKOMBO", 
+        price: "69.000", 
         rating: 3, 
-        price: "69.000", 
     },
     {
-        img: "/Kukombo Dress.jpeg", 
-        title: "Gaun Kukombo", 
-        desc: "Gaun bernuansa vintage bermotif bunga siap mewarnai hari-harimu!", 
+        img: "/Jam Tangan.jpeg", 
+        title: "JAM TANGAN ALBA", 
+        price: "250.000",
         rating: 2, 
-        price: "69.000", 
     },
     {
-        img: "/Kukombo Dress.jpeg", 
-        title: "Gaun Kukombo", 
-        desc: "Gaun bernuansa vintage bermotif bunga siap mewarnai hari-harimu!", 
+        img: "/Alat Masak One Set.jpeg", 
+        title: "ALAT MASAK ONE SET RACHAEL", 
+        price: "300.000",
         rating: 1, 
-        price: "69.000", 
     },
     {
-        img: "/Kukombo Dress.jpeg", 
-        title: "Gaun Kukombo", 
-        desc: "Gaun bernuansa vintage bermotif bunga siap mewarnai hari-harimu!", 
+        img: "/Sofa.jpeg", 
+        title: "SOFA AMARELLA", 
+        price: "999.999",
         rating: 2, 
-        price: "69.000", 
     },
     {
-        img: "/Kukombo Dress.jpeg", 
-        title: "Gaun Kukombo", 
-        desc: "Gaun bernuansa vintage bermotif bunga siap mewarnai hari-harimu!", 
+        img: "/Blazer.jpeg", 
+        title: "BLAZER COCOJA", 
+        price: "56.000",
         rating: 3, 
-        price: "69.000", 
     },
 ];
 
 const Products = () => {
     return (
         <div>
-            <div className="container pt-16">
-                <h2 className="text-center font-medium text-4xl pb-4">Products</h2>
+            <div className="container pt-8 pb-10">
+                <h2 className="text-center font-medium text-3xl pb-10">Products</h2>
                 <div className="grid grid-cols-1 place-items-center sm:place-items-start sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 xl:gap-x-20 xl:gap-y-10">
                     {productsData.map((item, index) => (
                         <ProductCard
                             key={index}
                             img={item.img}
                             title={item.title}
-                            desc={item.desc}
-                            rating={item.rating}
                             price={item.price}
+                            rating={item.rating}
                         />
                     ))}
                 </div>
