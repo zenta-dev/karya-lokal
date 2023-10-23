@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 
 interface PropsType {
   title: string;
@@ -24,32 +23,50 @@ const AboutUs: React.FC<PropsType> = ({ title, mainTitle, desc }) => {
     return () => clearInterval(interval);
   }, [cornerRadius]);
 
+  const renderWebsiteCreators = () => {
+    const creators = [
+      "Violia Ruana Nur'aini Sagita    (21051204004)",
+      "Nanggala Jalasena Pramana Putra (21051204006)",
+      "Rahmat hidayatullah             (21051204020)",
+      "Iffo Elsande Pratama Putra      (21051204064)",
+      "Ghaly Shaflyyus Tsaqif          (21051204069)",
+      "Bennett Ibrahim Basvira         (21051204072)",
+      "Herman Wordaun Rainhart Rumy    (21051204076)",
+    ];
+
+    return (
+      <ol className="text-left">
+        {creators.map((creator, index) => (
+          <li key={index}>
+            <a>{index + 1}. {creator}</a>
+          </li>
+        ))}
+      </ol>
+    );
+  };
+
   return (
     <div className="pb-10 pt-16 flex flex-col items-center justify-center">
       <div className="text-center">
         <h2 className="font-medium text-3xl pb-10">Jelajahi KaryaLokal</h2>
       </div>
-      <div
-        className="bg-[#DBEAFE] py-10 mx-4 relative rounded-3xl">
-        <div className="text-center">
-          <h2 className="mt-5 text-blackish text-2xl font-semibold">Check It Out Our Best Product!</h2>
-        </div>
-        <div className="flex justify-center h-full">
-          <div className="w-1/2 text-left pl-16">
-            <h2 className="pt-5 pb-5 text-blackish text-[26px] md:text-[30px] lg:text-[32px] font-medium leading-[1.2]">
-              Flawless Macrame Minibag
-            </h2>
-            <h3 className="pb-5 text-blackish text-[26px] md:text-[30px] lg:text-[40px] font-bold leading-[1.2]">
-              Dealone Minibag
-            </h3>
-            <h1 className="text-blackish text-[26px] md:text-[30px] lg:text-[20px] font-regular leading-[1.2]">
-              Tas mini ini merupakan seni kerajinan yang menggunakan teknik simpul persegi dengan rantaian benang awal dan akhir hingga menghasilkan suatu hasil tenunan.
-            </h1>
+      <div className="bg-[#DBEAFE] p-10 relative rounded-3xl text-white text-center">
+        <div className="bg-white p-10 relative rounded-3xl text-black text-center">
+          <div className="bg-[#566BA7] p-4 rounded-lg text-white text-center mb-5">
+            <h2 className="text-xl font-semibold">Tentang KaryaLokal</h2>
           </div>
+          <h1>
+            KaryaLokal adalah platform e-commerce yang mempromosikan dan mendukung produk-produk lokal Indonesia dengan fokus pada keberlanjutan dan kearifan lokal. Mereka menawarkan beragam barang dari kecantikan, furniture, aksesoris, hingga produk fashion, membantu meningkatkan ekonomi lokal dan melestarikan budaya. Dengan berbelanja di KaryaLokal, pelanggan mendukung bisnis lokal dan warisan budaya Indonesia. Platform ini merupakan tempat ideal untuk mengeksplorasi dan mendukung produk lokal berkualitas.
+          </h1>
+          <div className="bg-[#566BA7] p-4 rounded-lg text-white text-center mb-5 mt-5">
+            <h2 className="text-xl font-semibold">Pembuat Website</h2>
+          </div>
+          {renderWebsiteCreators()}
         </div>
       </div>
     </div>
   );
 };
 
-export default AboutUs
+export default AboutUs;
+
