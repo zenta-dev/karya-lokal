@@ -28,7 +28,7 @@ const BestSeller: React.FC<PropsType> = ({ title, mainTitle, desc }) => {
         <h2 className="font-medium text-3xl pb-10">Best Seller</h2>
       </div>
       <div
-        className="bg-[#DBEAFE] py-10 mx-4 relative rounded-3xl"
+        className="bg-[#DBEAFE] py-10 mx-4 relative rounded-3xl shadow-2xl"
       >
         <div className="text-center">
           <h2 className="mt-5 text-blackish text-2xl font-semibold">Check It Out Our Best Product!</h2>
