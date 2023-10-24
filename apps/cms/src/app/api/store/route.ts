@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     const { userId } = auth();
     const body = await req.json();
 
-    const { name, logo, about } = body;
+    const { name, logo, about, address } = body;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 403 });
@@ -50,6 +50,21 @@ export async function POST(req: Request) {
         User: {
           connect: {
             id: user?.id,
+          },
+        },
+        Address: {
+          create: {
+            type: address.type,
+            address: address.address,
+            city: address.city,
+            state: address.state,
+            zip: address.zip,
+            country: address.country,
+            User: {
+              connect: {
+                id: user?.id,
+              },
+            },
           },
         },
       },

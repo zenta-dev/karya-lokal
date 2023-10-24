@@ -3,8 +3,14 @@ import { redirect } from "next/navigation";
 
 import { MainNav } from "@/components/main-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Store } from "@karya-lokal/database";
 
-const Navbar = async () => {
+// props store name
+interface NavbarProps {
+  store: Store;
+}
+
+const Navbar = async (props: NavbarProps) => {
   const { userId } = auth();
 
   if (!userId) {
@@ -13,7 +19,7 @@ const Navbar = async () => {
   return (
     <div className="border-b">
       <div className="flex h-16 items-center px-4">
-        <MainNav className="mx-6" />
+        <MainNav className="mx-6" store={props.store} />
         <div className="ml-auto flex items-center space-x-4">
           <ThemeToggle />
           <UserButton afterSignOutUrl="/" />

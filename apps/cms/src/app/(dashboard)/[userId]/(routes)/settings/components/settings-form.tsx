@@ -11,7 +11,6 @@ import { toast } from "react-hot-toast";
 import * as z from "zod";
 
 import { AlertModal } from "@/components/modals/alert-modal";
-import { ApiAlert } from "@/components/ui/api-alert";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -24,6 +23,13 @@ import {
 import { Heading } from "@/components/ui/heading";
 import ImageUpload from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useOrigin } from "@/hooks/use-origin";
 
@@ -34,19 +40,15 @@ const formSchema = z.object({
   banner: z.string().nullable(),
   about: z.string().nullable(),
   userId: z.string().nullable(),
-  Address: z
-    .array(
-      z.object({
-        id: z.string(),
-        name: z.string(),
-        address: z.string(),
-        city: z.string(),
-        state: z.string(),
-        zip: z.string(),
-        country: z.string(),
-      })
-    )
-    .optional(),
+  Address: z.object({
+    id: z.string().nullable(),
+    type: z.enum(["Office", "Home"]),
+    address: z.string().min(10).max(50),
+    city: z.string().min(1),
+    state: z.string().min(1),
+    zip: z.string().min(1),
+    country: z.string().min(1),
+  }),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -56,6 +58,16 @@ type SettingsFormValues = z.infer<typeof formSchema>;
 interface SettingsFormProps {
   initialData: Store;
 }
+const typeEnum = [
+  {
+    value: "Office",
+    label: "Office",
+  },
+  {
+    value: "Home",
+    label: "Home",
+  },
+];
 
 export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
   const params = useParams();
@@ -73,7 +85,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
   const onSubmit = async (data: SettingsFormValues) => {
     try {
       setLoading(true);
-      await axios.patch(`/api/stores/${params.userId}`, data);
+      await axios.patch(`/api/store/${params.userId}`, data);
       router.refresh();
       toast.success("Store updated.");
     } catch (error: any) {
@@ -86,7 +98,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/stores/${params.userId}`);
+      await axios.delete(`/api/store/${params.userId}`);
       router.refresh();
       router.push("/");
       toast.success("Store deleted.");
@@ -180,32 +192,125 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
                 </FormItem>
               )}
             />
+            <h1 className="col-span-3 text-3xl font-bold">Address</h1>
             <FormField
               control={form.control}
-              name="Address"
+              name="Address.type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Type</FormLabel>
+
+                  <FormControl>
+                    <Select
+                      disabled={loading}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                      }}
+                      {...field}
+                    >
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue={field.value}
+                          placeholder="Select a category"
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {typeEnum.map((type) => (
+                          <SelectItem
+                            key={type.value}
+                            onChange={field.onChange}
+                            value={type.value}
+                          >
+                            {type.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="Address.address"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Address</FormLabel>
                   <FormControl>
-                    {field.value?.map((address, index) => (
-                      <div key={index} className="flex flex-col space-y-4">
-                        <div className="flex flex-row items-center justify-between">
-                          <div className="flex flex-col space-y-1">
-                            <div className="text-sm font-medium"></div>
-                            <div className="text-sm font-medium">
-                              {address.address}
-                            </div>
-                            <div className="text-sm font-medium">
-                              {address.city}, {address.state} {address.zip}
-                            </div>
-                            <div className="text-sm font-medium">
-                              {address.country}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                    <Input
+                      disabled={loading}
+                      placeholder="Address"
+                      {...field}
+                    />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="Address.city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>City</FormLabel>
+                  <FormControl>
+                    <Input disabled={loading} placeholder="City" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="Address.state"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>State</FormLabel>
+                  <FormControl>
+                    <Input disabled={loading} placeholder="State" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="Address.zip"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Zip</FormLabel>
+                  <FormControl>
+                    <Input disabled={loading} placeholder="Zip" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="Address.country"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Country</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="Country"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* hidden input address id */}
+            <FormField
+              control={form.control}
+              name="Address.id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl></FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -216,12 +321,6 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
           </Button>
         </form>
       </Form>
-      <Separator />
-      <ApiAlert
-        title="NEXT_PUBLIC_API_URL"
-        variant="public"
-        description={`${origin}/api/${params.userId}`}
-      />
     </>
   );
 };

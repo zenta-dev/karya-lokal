@@ -1,5 +1,6 @@
 import { prisma } from "@karya-lokal/database";
 
+import { format } from "date-fns";
 import { ProductsClient } from "./components/client";
 import { ProductColumn } from "./components/columns";
 
@@ -28,7 +29,7 @@ const ProductsPage = async ({ params }: { params: { userId: string } }) => {
     userCartId: item.userCartId,
     variant: item.variant,
     category: item.category,
-    createdAt: item.createdAt,
+    createdAt: format(item.createdAt as Date, "MMMM do, yyyy"),
   }));
   console.log(formattedProducts);
   return (

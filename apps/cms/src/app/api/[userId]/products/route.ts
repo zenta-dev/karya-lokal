@@ -51,9 +51,9 @@ export async function POST(
         images: images,
         price: parseInt(price),
         description,
-        variant: {
-          createMany: { data: body.variants },
-        },
+        // variant: {
+        //   createMany: { data: body.variants },
+        // },
       },
       include: {
         category: true,

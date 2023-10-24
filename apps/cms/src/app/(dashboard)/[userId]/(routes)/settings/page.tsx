@@ -20,6 +20,7 @@ const SettingsPage = async ({ params }: { params: { userId: string } }) => {
       Address: true,
     },
   });
+
   console.log(store);
   if (!store) {
     redirect("/");

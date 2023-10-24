@@ -3,7 +3,6 @@
 import { AlertModal } from "@/components/modals/alert-modal";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DataTable } from "@/components/ui/data-table";
 import {
   Form,
   FormControl,
@@ -26,7 +25,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Category, ProductVariant, SubVariant } from "@karya-lokal/database";
+import { Category } from "@karya-lokal/database";
 import axios from "axios";
 import { Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -35,7 +34,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import * as z from "zod";
 import { ProductColumn } from "../../components/columns";
-import { columns } from "./columns";
 
 const formSchema = z.object({
   name: z.string().min(5),
@@ -80,7 +78,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 
   const [category1, setCategory1] = useState<any>(false);
   const [category2, setCategory2] = useState<any>(false);
-  const [variantTable, setVariantTable] = useState<any>(false);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -97,14 +94,17 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         discountId: null,
         userCartId: null,
         category: null,
-        productCode: "",
         variant: [
           {
             name: "",
             values: [{ name: "", price: 0, stock: 0 }],
           },
+          {
+            name: "",
+            values: [{ name: "", price: 0, stock: 0 }],
+          },
         ],
-        isArchived: false,
+        createdAt: null,
       };
 
   const form = useForm<ProductFormValues>({
@@ -135,10 +135,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     try {
       setLoading(true);
       console.log(category2);
-      if (!initialData?.category || !category2) {
-        throw new Error("Please select a category");
+      if (!category2.id) {
+        if (!initialData) throw new Error("Please select a category");
       }
-      data.categoryId = category2;
+      if (initialData) {
+        data.categoryId = initialData.categoryId;
+      } else {
+        data.categoryId = category2.id;
+      }
 
       delete data.category0;
       delete data.category1;
@@ -149,6 +153,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           data
         );
       } else {
+        console.log(data);
         await axios.post(`/api/${params.userId}/products`, data);
       }
       router.refresh();
@@ -293,8 +298,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                           }}
                           value={field.value}
                           defaultValue={
-                            initialData?.category
-                              ? initialData?.category.parentSlug || ""
+                            defaultValues?.category
+                              ? defaultValues?.category.parentSlug || ""
                               : field.value
                           }
                         >
@@ -323,7 +328,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                       </FormItem>
                     )}
                   />
-                  {category1 || initialData?.category ? (
+                  {category1 || defaultValues?.category ? (
                     <FormField
                       control={form.control}
                       name="category1"
@@ -342,8 +347,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                             }}
                             value={field.value}
                             defaultValue={
-                              initialData?.category
-                                ? initialData?.category.slug || ""
+                              defaultValues?.category
+                                ? defaultValues?.category.slug || ""
                                 : field.value
                             }
                           >
@@ -360,7 +365,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                                 category.level === 1 &&
                                 category.parentSlug ===
                                   (category1.slug ||
-                                    initialData?.category.parentSlug) ? (
+                                    defaultValues?.category?.parentSlug) ? (
                                   <SelectItem
                                     key={category.slug}
                                     value={category.slug || ""}
@@ -397,7 +402,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               />
             </div>
           </div>
-          <div className="border p-4 rounded-xl space-y-2">
+          {/* <div className="border p-4 rounded-xl space-y-2">
             <h1 className="text-xl font-bold">Variant</h1>
             <p className="text-gray-500 mb-8">
               Enter the details of your product
@@ -409,50 +414,48 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               render={(field) => (
                 <FormItem>
                   <div className=" grid grid-cols-2 gap-4">
-                    {initialData?.variant.map(
-                      (item: ProductVariant, index: number) => (
-                        <FormField
-                          key={item.name}
-                          name={`variant.${index}.name`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Variant {index + 1}</FormLabel>
-                              <FormControl>
-                                <Input
-                                  disabled={loading}
-                                  placeholder="e.g. Size or Color"
-                                  {...field}
-                                />
-                              </FormControl>
+                    {defaultValues?.variant.map((item: any, index: number) => (
+                      <FormField
+                        key={item.name}
+                        name={`variant.${index}.name`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Variant {index + 1}</FormLabel>
+                            <FormControl>
+                              <Input
+                                disabled={loading}
+                                placeholder="e.g. Size or Color"
+                                {...field}
+                              />
+                            </FormControl>
 
-                              {item.values.map(
-                                (subItem: SubVariant, subIndex: number) => (
-                                  <FormField
-                                    key={subItem.name}
-                                    name={`variant.${index}.values.${subIndex}.name`}
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel>
-                                          Options {item.name} {subIndex + 1}
-                                        </FormLabel>
-                                        <FormControl>
-                                          <Input
-                                            disabled={loading}
-                                            placeholder="e.g. Red or Blue"
-                                            {...field}
-                                          />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                )
-                              )}
-                            </FormItem>
-                          )}
-                        />
-                      )
-                    )}
+                            {item.values.map(
+                              (subItem: SubVariant, subIndex: number) => (
+                                <FormField
+                                  key={subItem.name}
+                                  name={`variant.${index}.values.${subIndex}.name`}
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>
+                                        Options {item.name} {subIndex + 1}
+                                      </FormLabel>
+                                      <FormControl>
+                                        <Input
+                                          disabled={loading}
+                                          placeholder="e.g. Red or Blue"
+                                          onChange={(e) => {}}
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              )
+                            )}
+                          </FormItem>
+                        )}
+                      />
+                    ))}
                   </div>
                 </FormItem>
               )}
@@ -462,7 +465,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             columns={columns({
               header1: form.getValues().variant[0]?.type || "Variant",
               header2: form.getValues().variant[1]?.values[0].type || "Options",
-              onChange: (e) => { 
+              onChange: (e) => {
                 const ids = e.id.split("-");
                 const variant = form.getValues().variant;
 
@@ -504,7 +507,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 id: `${v1Value.name}-${v2Value.name}`,
               })),
             }))}
-          />
+          /> */}
 
           <FormField
             control={form.control}

@@ -6,7 +6,7 @@ import { Category, ProductImage, ProductVariant } from "@karya-lokal/database";
 import { CellAction } from "./cell-action";
 
 export type ProductColumn = {
-  id: string;
+  id?: string;
   name: string;
   description: string;
   categoryId: string;
@@ -14,9 +14,9 @@ export type ProductColumn = {
   images: ProductImage[];
   discountId: string | null;
   userCartId: string | null;
-  category: Category;
+  category?: Category | null;
   variant: ProductVariant[];
-  createdAt: Date | null;
+  createdAt: string;
 };
 
 export const columns: ColumnDef<ProductColumn>[] = [
@@ -24,7 +24,10 @@ export const columns: ColumnDef<ProductColumn>[] = [
     accessorKey: "name",
     header: "Name",
   },
-
+  {
+    accessorKey: "description",
+    header: "Description",
+  },
   {
     accessorKey: "price",
     header: "Price",
@@ -32,6 +35,7 @@ export const columns: ColumnDef<ProductColumn>[] = [
   {
     accessorKey: "category",
     header: "Category",
+    cell: ({ row }) => <span>{row.original.category?.name}</span>,
   },
   {
     accessorKey: "createdAt",
