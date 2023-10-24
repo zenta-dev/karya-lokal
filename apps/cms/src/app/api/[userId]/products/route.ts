@@ -42,6 +42,12 @@ export async function POST(
       return new NextResponse("Store id is required", { status: 400 });
     }
 
+    const store = await prisma.store.findUnique({
+      where: {
+        name: params.userId,
+      },
+    });
+
     const product = await prisma.storeProduct.create({
       data: {
         name,
@@ -73,7 +79,7 @@ export async function GET(
 ) {
   try {
     const { searchParams } = new URL(req.url);
-    const categoryId = searchParams.get("categoryId") || undefined; 
+    const categoryId = searchParams.get("categoryId") || undefined;
 
     if (!params.storeId) {
       return new NextResponse("Store id is required", { status: 400 });
@@ -82,11 +88,11 @@ export async function GET(
     const products = await prisma.storeProduct.findMany({
       where: {
         storeName: params.storeId,
-        categoryId,  
+        categoryId,
         isArchived: false,
       },
-      include: { 
-        category: true, 
+      include: {
+        category: true,
       },
       orderBy: {
         createdAt: "desc",

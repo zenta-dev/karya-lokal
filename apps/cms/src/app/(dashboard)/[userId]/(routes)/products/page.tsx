@@ -25,7 +25,7 @@ const ProductsPage = async ({ params }: { params: { userId: string } }) => {
     categoryId: item.categoryId,
     price: item.price,
     images: item.images,
-    discountId: item.discountId,
+    flashSaleId: item.flashSaleId,
     userCartId: item.userCartId,
     variant: item.variant,
     category: item.category,

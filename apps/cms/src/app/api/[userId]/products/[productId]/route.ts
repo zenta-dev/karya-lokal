@@ -45,8 +45,7 @@ export async function DELETE(
 
     const storeByUserId = await prisma.store.findFirst({
       where: {
-        id: params.storeId,
-        userId,
+        name: params.storeId,
       },
     });
 

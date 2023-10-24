@@ -38,19 +38,19 @@ model User {
 }
 
 model Store {
-  id              String            @id @default(auto()) @map("_id") @db.ObjectId
-  name            String            @unique @db.String
-  logo            String
-  banner          String?
-  about           String?
-  addressId       String?           @db.ObjectId
-  Address         Address?          @relation(fields: [addressId], references: [id])
-  StoreProduct    StoreProduct[]
-  ProductDiscount ProductDiscount[]
-  User            User?             @relation(fields: [userId], references: [id])
-  userId          String?           @unique @db.ObjectId
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  name         String         @unique @db.String
+  logo         String
+  banner       String?
+  about        String?
+  addressId    String?        @db.ObjectId
+  Address      Address?       @relation(fields: [addressId], references: [id])
+  StoreProduct StoreProduct[]
+  FlashSale    FlashSale[]
+  User         User?          @relation(fields: [userId], references: [id])
+  userId       String?        @unique @db.ObjectId
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 
   @@map("store")
 }
@@ -132,8 +132,8 @@ model StoreProduct {
   images      ProductImage[]
   orderItems  UserOrderItem[]
   reviews     ProductReview[]
-  Discount    ProductDiscount? @relation(fields: [discountId], references: [id])
-  discountId  String?          @db.ObjectId
+  FlashSale   FlashSale?       @relation(fields: [flashSaleId], references: [id])
+  flashSaleId String?          @db.ObjectId
   UserCart    UserCart?        @relation(fields: [userCartId], references: [id])
   userCartId  String?          @db.ObjectId
   Store       Store?           @relation(fields: [storeName], references: [name])
@@ -180,17 +180,18 @@ model ProductReview {
   @@map("product_review")
 }
 
-model ProductDiscount {
+model FlashSale {
   id          String         @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   description String
   percent     Int
+  startDate   DateTime
   endDate     DateTime
   products    StoreProduct[]
+  Store       Store?         @relation(fields: [storeName], references: [name])
+  storeName   String?        @db.String
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
-  Store       Store?         @relation(fields: [storeId], references: [id])
-  storeId     String?        @db.ObjectId
 
-  @@map("product_discount")
+  @@map("flash_sale")
 }

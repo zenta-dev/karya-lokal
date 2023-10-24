@@ -1,15 +1,13 @@
-'use client';
+import BestSeller from "./components/homrpage/BestSeller";
+import Hero from "./components/homrpage/Hero";
+import Products from "./components/homrpage/Products";
 
-import BestSeller from "./components/BestSeller";
-import Hero from "./components/Hero";
-import Products from "./components/Products";
-
-export default function Home(){
-  return(
+export default function Home() {
+  return (
     <main>
-      <Hero/>
-      <BestSeller/>
-      <Products/>
+      <Hero />
+      <BestSeller />
+      <Products />
     </main>
   );
 }

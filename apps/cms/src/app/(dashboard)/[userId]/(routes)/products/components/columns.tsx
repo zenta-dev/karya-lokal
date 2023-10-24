@@ -12,11 +12,11 @@ export type ProductColumn = {
   categoryId: string;
   price: number;
   images: ProductImage[];
-  discountId: string | null;
+  flashSaleId: string | null;
   userCartId: string | null;
   category?: Category | null;
   variant: ProductVariant[];
-  createdAt: string;
+  createdAt: any;
 };
 
 export const columns: ColumnDef<ProductColumn>[] = [

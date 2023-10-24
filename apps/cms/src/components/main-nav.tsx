@@ -33,6 +33,11 @@ export function MainNav({
       active: pathname === `/${params.userId}/products`,
     },
     {
+      href: `/${params.userId}/flashsales`,
+      label: "Flash Sale",
+      active: pathname === `/${params.userId}/flashsales`,
+    },
+    {
       href: `/${params.userId}/orders`,
       label: "Orders",
       active: pathname === `/${params.userId}/orders`,
@@ -58,7 +63,7 @@ export function MainNav({
               className="rounded-lg"
               alt="logo"
               layout="fill"
-              objectFit="contain"
+              objectFit="cover"
             />
           </div>
           <span className="hidden md:inline">{store.name}</span>
