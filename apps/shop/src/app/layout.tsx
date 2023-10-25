@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import NavBar from "./components/NavBar";
 import "./globals.css";
 
+import { ToastProvider } from "@/providers/toast-provider";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import Footer from "./components/Footer";
@@ -27,6 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-[#EFF6FF]">
         <body className={poppins.className}>
+          <ToastProvider />
           <Header />
           <NavBar />
           {children}

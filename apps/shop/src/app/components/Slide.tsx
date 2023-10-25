@@ -1,4 +1,5 @@
 import { priceFormatter } from "@/lib/utils";
+import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -19,7 +20,8 @@ const Slide: React.FC<propsType> = ({
   price,
   percent,
   id,
-}) => {
+}) => { 
+
   return (
     <div className="outline-none border-none relative">
       <div

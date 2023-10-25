@@ -1,3 +1,4 @@
+import { auth } from "@clerk/nextjs";
 import { prisma } from "@karya-lokal/database";
 import "slick-carousel/slick/slick.css";
 import ImageSlider from "../ui/image-slider";
@@ -25,7 +26,6 @@ const Hero = async () => {
       })
     )
   );
-
   return (
     <div>
       {/* <div className="container pt-10 pb-10">

@@ -1,25 +1,29 @@
+import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { BsSearch } from "react-icons/bs";
 import { HiOutlineShoppingBag } from "react-icons/hi";
-
+import { ProfileWrapper } from "./profile-wrapper";
 const Header = () => {
   const useImageLogo = true;
-  // const { userId } = auth();
+  const { userId } = auth();
 
   return (
     <div className="border-b border-gray-200 px-12">
       <div className="container flex flex-col sm:flex-row justify-between items-center py-2">
-        <div className="flex items-center space-x-4">
-          {useImageLogo ? (
-            <Image src="/logo.png" alt="Logo" width="48" height="48" />
-          ) : (
-            <span className="font-bold text-4xl text-blakish">Logo</span>
-          )}
-          <div className="hidden sm:block font-bold text-3xl text-blakish">
-            KaryaLokal
+        <Link href="/">
+          {" "}
+          <div className="flex items-center space-x-4">
+            {useImageLogo ? (
+              <Image src="/logo.png" alt="Logo" width="48" height="48" />
+            ) : (
+              <span className="font-bold text-4xl text-blakish">Logo</span>
+            )}
+            <div className="hidden sm:block font-bold text-3xl text-blakish">
+              KaryaLokal
+            </div>
           </div>
-        </div>
+        </Link>
 
         <div className="w-full sm:w-[300px] md:w-[70%] lg:w-[50%] relative my-2 sm:my-0">
           <input
@@ -42,7 +46,7 @@ const Header = () => {
               </div>
             </Link>
           </div>
-          {/* {userId ? <UserButton afterSignOutUrl="/" /> : <BiUser />} */}
+          <ProfileWrapper />
         </div>
       </div>
     </div>

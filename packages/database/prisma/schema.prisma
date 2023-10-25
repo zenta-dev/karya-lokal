@@ -71,10 +71,10 @@ model Address {
 }
 
 model UserCart {
-  id      String         @id @default(auto()) @map("_id") @db.ObjectId
-  userId  String         @db.ObjectId
-  user    User           @relation(fields: [userId], references: [id])
-  product StoreProduct[]
+  id       String          @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String          @unique @db.ObjectId
+  user     User            @relation(fields: [userId], references: [id])
+  products ProductInCart[]
 
   @@map("user_cart")
 }
@@ -134,8 +134,7 @@ model StoreProduct {
   reviews     ProductReview[]
   FlashSale   FlashSale?       @relation(fields: [flashSaleId], references: [id])
   flashSaleId String?          @db.ObjectId
-  UserCart    UserCart?        @relation(fields: [userCartId], references: [id])
-  userCartId  String?          @db.ObjectId
+  UserCart    ProductInCart[]
   Store       Store?           @relation(fields: [storeName], references: [name])
   storeName   String?          @db.String
   isArchived  Boolean          @default(false)
@@ -143,6 +142,18 @@ model StoreProduct {
   updatedAt   DateTime?        @updatedAt
 
   @@map("store_product")
+}
+
+model ProductInCart {
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
+  quantity   Int
+  price      Float
+  product    StoreProduct @relation(fields: [productId], references: [id])
+  productId  String       @db.ObjectId
+  UserCart   UserCart?    @relation(fields: [userCartId], references: [id])
+  userCartId String?      @db.ObjectId
+
+  @@map("product_in_cart")
 }
 
 type SubVariant {
