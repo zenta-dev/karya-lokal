@@ -1,6 +1,5 @@
 import { getBestSale } from "@/lib/products/get-best-sale";
 import Image from "next/image";
-import React from "react";
 
 interface PropsType {
   title?: string;
@@ -8,7 +7,7 @@ interface PropsType {
   desc?: string;
 }
 
-const BestSeller: React.FC<PropsType> = async ({ title, mainTitle, desc }) => {
+const BestSeller = async (props: PropsType) => {
   const bestProduct = await getBestSale();
   console.log("bestProduct", bestProduct);
   return (
