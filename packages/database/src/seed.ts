@@ -46,6 +46,7 @@ export async function seed() {
           name: category.name,
           slug: category.slug,
           parentSlug: category.parentSlug,
+
           level: category.level,
         },
         create: category,
