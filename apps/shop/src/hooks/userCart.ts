@@ -1,43 +1,31 @@
-// import { create } from "zustand";
-// import { toast } from "react-hot-toast";
-// import { persist, createJSONStorage } from "zustand/middleware";
+// import { createContext, useContext, useState } from "react";
 
-// import { Product } from "@/types";
-// import { AlertTriangle } from "lucide-react";
+// type CartContextType = {
+//     cartTotalOty: number;
+// };
 
-// interface CartStore {
-//   items: Product[];
-//   addItem: (data: Product) => void;
-//   removeItem: (id: string) => void;
-//   removeAll: () => void;
+// export const CartContext =
+// createContext<CartContextType | null>(null);
+
+// interface Props {
+//     [propName: string]: any;
 // }
 
-// const useCart = create(
-//   persist<CartStore>(
-//     (set, get) => ({
-//       items: [],
-//       addItem: (data: Product) => {
-//         const currentItems = get().items;
-//         const existingItem = currentItems.find((item) => item.id === data.id);
+// export const CartContextProvider = (props: Props) => {
+//     const [cartTotalOty, setCartTotalOty] = useState(0);
 
-//         if (existingItem) {
-//           return toast("Item already in cart.");
-//         }
+//     const value = {
+//         cartTotalOty,
+//     };
 
-//         set({ items: [...get().items, data] });
-//         toast.success("Item added to cart.");
-//       },
-//       removeItem: (id: string) => {
-//         set({ items: [...get().items.filter((item) => item.id !== id)] });
-//         toast.success("Item removed from cart.");
-//       },
-//       removeAll: () => set({ items: [] }),
-//     }),
-//     {
-//       name: "cart-storage",
-//       storage: createJSONStorage(() => localStorage),
+//     return <CartContext.Provider value={value} {... props} />;
+// };
+// export const useCart = () =>{
+//     const context = useContext(CartContext);
+
+//     if(context === null) {
+//         throw new Error("useCart must be used within a CartContextProvider")
 //     }
-//   )
-// );
 
-// export default useCart;
+//     return context
+// };
