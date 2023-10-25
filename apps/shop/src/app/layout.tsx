@@ -8,6 +8,7 @@ import { ToastProvider } from "@/providers/toast-provider";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import Footer from "./components/Footer";
+import CartProvider from "./providers/CartProvider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -28,6 +29,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-[#EFF6FF]">
         <body className={poppins.className}>
+          <CartProvider children={undefined} />
           <ToastProvider />
           <Header />
           <NavBar />

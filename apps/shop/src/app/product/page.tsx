@@ -1,9 +1,20 @@
-import React from 'react'
+import React from 'react';
+import DetailProduct from './[productId]/page';
 
-const Product = () => {
-  return (
-    <div>Product</div>
-  )
+interface IParams {
+  productId?: string; 
 }
 
-export default Product
+const Product: React.FC<{ params: IParams }> = ({ params }) => {
+  console.log(params.productId); 
+
+  return (
+    <div className="p-8">
+      <DetailProduct params={{
+        productId: ''
+      }} />
+    </div>
+  );
+};
+
+export default Product;
