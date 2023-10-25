@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
 import { stripe } from "@/lib/stripe";
-import { prisma } from "@karya-lokal/database";
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -35,34 +34,33 @@ export async function POST(req: Request) {
 
   const addressString = addressComponents.filter((c) => c !== null).join(", ");
 
-  if (event.type === "checkout.session.completed") {
-    const order = await prisma.order.update({
-      where: {
-        id: session?.metadata?.orderId,
-      },
-      data: {
-        isPaid: true,
-        address: addressString,
-        phone: session?.customer_details?.phone || "",
-      },
-      include: {
-        orderItems: true,
-      },
-    });
+  // if (event.type === "checkout.session.completed") {
+  //   const order = await prisma.userOrder.update({
+  //     where: {
+  //       id: session?.metadata?.orderId,
+  //     },
+  //     data: {
+  //       address: addressString,
+  //       phone: session?.customer_details?.phone || "",
+  //     },
+  //     include: {
+  //       orderItems: true,
+  //     },
+  //   });
 
-    const productIds = order.orderItems.map((orderItem) => orderItem.productId);
+  //   const productIds = order.orderItems.map((orderItem) => orderItem.productId);
 
-    await prisma.product.updateMany({
-      where: {
-        id: {
-          in: [...productIds],
-        },
-      },
-      data: {
-        isArchived: true,
-      },
-    });
-  }
+  //   await prisma.product.updateMany({
+  //     where: {
+  //       id: {
+  //         in: [...productIds],
+  //       },
+  //     },
+  //     data: {
+  //       isArchived: true,
+  //     },
+  //   });
+  // }
 
   return new NextResponse(null, { status: 200 });
 }

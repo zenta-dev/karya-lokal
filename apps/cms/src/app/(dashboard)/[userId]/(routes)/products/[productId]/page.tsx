@@ -1,6 +1,5 @@
 import { prisma } from "@karya-lokal/database";
 
-import { ProductColumn } from "../components/columns";
 import { ProductForm } from "./components/product-form";
 
 const ProductPage = async ({
@@ -8,7 +7,7 @@ const ProductPage = async ({
 }: {
   params: { productId: string; userId: string };
 }) => {
-  let product: ProductColumn | null = null;
+  let product: any = null;
   if (params.productId !== "new") {
     product = await prisma.storeProduct.findUnique({
       where: {

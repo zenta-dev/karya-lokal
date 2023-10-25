@@ -13,7 +13,7 @@ export type ProductColumn = {
   price: number;
   images: ProductImage[];
   flashSaleId: string | null;
-  userCartId: string | null;
+  // userCartId: string | null;
   category?: Category | null;
   variant: ProductVariant[];
   createdAt: any;

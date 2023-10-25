@@ -38,32 +38,32 @@ const DetailProduct: React.FC<ProductPageProps> = async ({ params }) => {
   );
 };
 
-export async function getServerSideProps(context: {
-  params: { productId: string };
-}) {
-  const { productId } = context.params;
+// export async function getServerSideProps(context: {
+//   params: { productId: string };
+// }) {
+//   const { productId } = context.params;
 
-  // Simulate fetching product details from an API or database
-  const getProductDetails = async (productId: string) => {
-    // Replace this with an actual API or database call to fetch product details
-    // In this example, we are simulating product details
-    const response = await fetch(`/api/products/${productId}`);
-    if (response.ok) {
-      const product = await response.json();
-      return product;
-    } else {
-      // Handle the case where the product is not found
-      return null;
-    }
-  };
+//   // Simulate fetching product details from an API or database
+//   const getProductDetails = async (productId: string) => {
+//     // Replace this with an actual API or database call to fetch product details
+//     // In this example, we are simulating product details
+//     const response = await fetch(`/api/products/${productId}`);
+//     if (response.ok) {
+//       const product = await response.json();
+//       return product;
+//     } else {
+//       // Handle the case where the product is not found
+//       return null;
+//     }
+//   };
 
-  const product = await getProductDetails(productId);
+//   const product = await getProductDetails(productId);
 
-  return {
-    props: {
-      product,
-    },
-  };
-}
+//   return {
+//     props: {
+//       product,
+//     },
+//   };
+// }
 
 export default DetailProduct;
