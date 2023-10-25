@@ -56,7 +56,7 @@ const typeEnum = [
   },
 ];
 
-export const StoreModal = () => {
+export default function StoreModal() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
@@ -289,6 +289,6 @@ export const StoreModal = () => {
       </Form>
     </div>
   );
-};
+}
 
-export default StoreModal;
+// export default StoreModal;
