@@ -4,11 +4,20 @@ import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
+import { Store } from "@karya-lokal/database";
+import Image from "next/image";
+
+interface MainNavProps {
+  className?: string;
+  props?: React.HTMLAttributes<HTMLElement>;
+  store: Store;
+}
 
 export function MainNav({
   className,
+  store,
   ...props
-}: React.HTMLAttributes<HTMLElement>) {
+}: MainNavProps): React.ReactElement {
   const pathname = usePathname();
   const params = useParams();
 
@@ -22,6 +31,11 @@ export function MainNav({
       href: `/${params.userId}/products`,
       label: "Products",
       active: pathname === `/${params.userId}/products`,
+    },
+    {
+      href: `/${params.userId}/flashsales`,
+      label: "Flash Sale",
+      active: pathname === `/${params.userId}/flashsales`,
     },
     {
       href: `/${params.userId}/orders`,
@@ -40,6 +54,21 @@ export function MainNav({
       className={cn("flex items-center space-x-4 lg:space-x-6", className)}
       {...props}
     >
+      <Link href={`/${params.userId}`} className="text-lg font-bold">
+        {/* lgo */}
+        <div className="flex items-center space-x-2">
+          <div className="relative w-8 h-8 ">
+            <Image
+              src={store.logo}
+              className="rounded-lg"
+              alt="logo"
+              layout="fill"
+              objectFit="cover"
+            />
+          </div>
+          <span className="hidden md:inline">{store.name}</span>
+        </div>
+      </Link>
       {routes.map((route) => (
         <Link
           key={route.href}

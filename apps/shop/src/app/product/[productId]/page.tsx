@@ -1,47 +1,69 @@
 // pages/products/[id].tsx
 
-import { prisma } from "@/prisma/cli";
-import { GetServerSideProps } from 'next';
+import Gallery from "@/app/components/gallery";
+import Info from "@/app/components/info";
+import { getProduct } from "@/lib/products/get-product";
+
+// interface ProductPageProps {
+//   id: string;
+//   name: string;
+//   description: string;
+//   price: number;
+// }
 
 interface ProductPageProps {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
+  params: {
+    productId: string;
+  };
 }
-
-const DetailProduct = ({ id, name, description, price }: ProductPageProps) => {
+const DetailProduct: React.FC<ProductPageProps> = async ({ params }) => {
+  const product = await getProduct(params.productId);
+  const images: any = product?.images?.map((image, index) => ({
+    id: index,
+    url: image.url,
+  }));
+  console.log(product);
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">{name}</h1>
-      <p className="mb-4">{description}</p>
-      <p className="text-lg font-semibold">{`$${price.toFixed(2)}`}</p>
+    <div className="mx-auto max-w-7xl">
+      <div className="px-4 py-10 sm:px-6 lg:px-8">
+        <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
+          <Gallery images={images} />
+          <div className="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
+            <Info data={product} />
+          </div>
+        </div>
+        <hr className="my-10" />
+      </div>
     </div>
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { id } = context.params;
+export async function getServerSideProps(context: {
+  params: { productId: string };
+}) {
+  const { productId } = context.params;
 
-  const product = await prisma.product.findUnique({ where: { id: Number(id) } });
+  // Simulate fetching product details from an API or database
+  const getProductDetails = async (productId: string) => {
+    // Replace this with an actual API or database call to fetch product details
+    // In this example, we are simulating product details
+    const response = await fetch(`/api/products/${productId}`);
+    if (response.ok) {
+      const product = await response.json();
+      return product;
+    } else {
+      // Handle the case where the product is not found
+      return null;
+    }
+  };
 
-  if (!product) {
-    return {
-      notFound: true,
-    };
-  }
-
-  // IMPORTANT: Close the Prisma connection
-  await prisma.$disconnect();
+  const product = await getProductDetails(productId);
 
   return {
     props: {
-      id: product.id.toString(),
-      name: product.name,
-      description: product.description,
-      price: product.price,
+      product,
     },
   };
-};
+}
 
 export default DetailProduct;

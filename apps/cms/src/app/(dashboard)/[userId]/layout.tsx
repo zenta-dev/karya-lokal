@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/NavBar";
 import { prisma } from "@karya-lokal/database";
 
 export default async function DashboardLayout({
@@ -11,8 +11,6 @@ export default async function DashboardLayout({
   children: React.ReactNode;
   params: { userId: string };
 }) {
-  console.log("DashboardLayout " + params.userId);
-
   const { userId } = auth();
   if (!userId) {
     redirect("/sign-in");
@@ -39,7 +37,7 @@ export default async function DashboardLayout({
 
   return (
     <>
-      <Navbar />
+      <Navbar store={store} />
       {children}
     </>
   );

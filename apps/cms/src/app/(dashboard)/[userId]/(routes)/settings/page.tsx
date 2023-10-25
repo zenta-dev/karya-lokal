@@ -12,12 +12,16 @@ const SettingsPage = async ({ params }: { params: { userId: string } }) => {
     redirect("/sign-in");
   }
 
-  const store = await prisma.user.findFirst({
+  const store = await prisma.store.findFirst({
     where: {
-      id: params.userId,
+      name: params.userId,
+    },
+    include: {
+      Address: true,
     },
   });
 
+  console.log(store);
   if (!store) {
     redirect("/");
   }
