@@ -1,22 +1,20 @@
 {
+  "name": "main",
   "private": true,
   "scripts": {
-    "build": "turbo run build --concurrency=100%",
-    "dev": "pnpm install && turbo run dev  --concurrency=100%",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "generate": "turbo run generate",
-    "start": "turbo run start --concurrency=100%",
-    "db:migrate:deploy": "turbo run db:migrate:deploy",
-    "db:push": "turbo run db:push",
-    "db:seed": "turbo run db:seed"
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "eslint": "^8.51.0",
-    "prettier": "^3.0.3",
-    "@karya-lokal/tsconfig": "workspace:*",
-    "turbo": "^1.10.15"
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "prettier": "^3.1.0",
+    "turbo": "latest"
   },
-  "packageManager": "pnpm@8.6.10",
-  "name": "karya-lokal"
+  "packageManager": "pnpm@8.9.0",
+  "engines": {
+    "node": ">=18"
+  }
 }
